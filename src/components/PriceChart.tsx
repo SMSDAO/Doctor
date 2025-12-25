@@ -39,6 +39,7 @@ export function PriceChart({
       const avg = slice.reduce((sum, d) => sum + d.price, 0) / maLength
       ma.push({ timestamp: data[i].timestamp, value: avg })
     }
+
     return ma
   }, [data, showMA, maLength])
 
@@ -90,7 +91,7 @@ export function PriceChart({
     const xAxis = d3
       .axisBottom(xScale)
       .ticks(6)
-      .tickFormat((d) => {
+      .tickFormat(d => {
         const date = d as Date
         if (timeframe === '1H') return d3.timeFormat('%H:%M')(date)
         if (timeframe === '24H') return d3.timeFormat('%H:%M')(date)
@@ -120,7 +121,6 @@ export function PriceChart({
 
     g.selectAll('.axis path, .axis line')
       .style('stroke', 'oklch(0.25 0.04 290)')
-      .style('stroke-width', '1px')
 
     const gridlines = g.append('g').attr('class', 'grid')
 
@@ -252,7 +252,7 @@ export function PriceChart({
       .attr('class', 'overlay')
       .attr('width', width)
       .attr('height', priceHeight)
-      .style('fill', 'none')
+      .attr('fill', 'none')
       .style('pointer-events', 'all')
       .on('mouseover', () => {
         focus.style('display', null)
@@ -267,7 +267,7 @@ export function PriceChart({
         const i = bisect(data, x0, 1)
         const d0 = data[i - 1]
         const d1 = data[i]
-        
+
         if (!d0 || !d1) return
         
         const d = x0.getTime() - new Date(d0.timestamp).getTime() > new Date(d1.timestamp).getTime() - x0.getTime() ? d1 : d0
@@ -299,6 +299,7 @@ export function PriceChart({
               </div>
             )}
           </div>
+
           {!hoveredPoint && (
             <div className={cn(
               'flex items-center gap-1 data-font text-sm font-semibold',
@@ -332,7 +333,6 @@ export function PriceChart({
           ref={svgRef}
           width={dimensions.width}
           height={dimensions.height}
-          className="w-full"
         />
       </div>
 
