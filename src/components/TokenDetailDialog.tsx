@@ -3,10 +3,11 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Token } from '@/lib/types'
+import { Token, ChartTimeframe, ChartDataPoint } from '@/lib/types'
 import { formatPrice, formatVolume, formatPercentage, formatAddress, getChangeColor } from '@/lib/formatters'
-import { generatePriceHistory } from '@/lib/mockData'
-import { X, Copy, Bell, Star, TrendUp, TrendDown } from '@phosphor-icons/react'
+import { generateHistoricalData } from '@/lib/mockData'
+import { PriceChart } from '@/components/PriceChart'
+import { Copy, Bell, Star, TrendUp, TrendDown } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 interface TokenDetailDialogProps {
@@ -19,13 +20,14 @@ interface TokenDetailDialogProps {
 }
 
 export function TokenDetailDialog({ token, open, onOpenChange, onCreateAlert, isWatched, onToggleWatchlist }: TokenDetailDialogProps) {
-  const [priceHistory, setPriceHistory] = useState<Array<{ timestamp: number; price: number; volume: number }>>([])
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([])
+  const [timeframe, setTimeframe] = useState<ChartTimeframe>('7D')
 
   useEffect(() => {
     if (token) {
-      setPriceHistory(generatePriceHistory(token.price, 7))
+      setChartData(generateHistoricalData(token.price, timeframe))
     }
-  }, [token])
+  }, [token, timeframe])
 
   if (!token) return null
 
@@ -125,29 +127,17 @@ export function TokenDetailDialog({ token, open, onOpenChange, onCreateAlert, is
 
           <Card>
             <CardHeader>
-              <CardTitle>7-Day Price History</CardTitle>
+              <CardTitle>Price Chart</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-end gap-2">
-                {priceHistory.map((point, index) => {
-                  const maxPrice = Math.max(...priceHistory.map(p => p.price))
-                  const minPrice = Math.min(...priceHistory.map(p => p.price))
-                  const range = maxPrice - minPrice
-                  const heightPercent = range > 0 ? ((point.price - minPrice) / range) * 100 : 50
-                  
-                  return (
-                    <div
-                      key={point.timestamp}
-                      className="flex-1 bg-accent/20 hover:bg-accent/40 transition-colors rounded-t relative group"
-                      style={{ height: `${Math.max(heightPercent, 5)}%` }}
-                    >
-                      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-popover px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        {formatPrice(point.price)}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+              <PriceChart
+                data={chartData}
+                timeframe={timeframe}
+                onTimeframeChange={setTimeframe}
+                showVolume={true}
+                showMA={false}
+                tokenSymbol={token.symbol}
+              />
             </CardContent>
           </Card>
 

@@ -1,12 +1,13 @@
 import { Token, Alert } from '@/lib/types'
 import { TokenTable } from '@/components/TokenTable'
 import { MetricCard } from '@/components/MetricCard'
+import { ChartView } from '@/components/ChartView'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatVolume, formatPercentage, formatPrice } from '@/lib/formatters'
-import { ChartBar, Bell, Star, TrendUp, Coins, Lightning } from '@phosphor-icons/react'
+import { ChartBar, Bell, Star, TrendUp, Coins, Lightning, ChartLine } from '@phosphor-icons/react'
 import { Switch } from '@/components/ui/switch'
 
 interface UserDashboardProps {
@@ -68,12 +69,16 @@ export function UserDashboard({
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-3">
+        <TabsList className="grid w-full max-w-2xl grid-cols-4">
           <TabsTrigger value="all">
             All Tokens ({tokens.length})
           </TabsTrigger>
           <TabsTrigger value="watchlist">
             Watchlist ({watchlist.size})
+          </TabsTrigger>
+          <TabsTrigger value="charts">
+            <ChartLine size={16} className="mr-1" />
+            Charts
           </TabsTrigger>
           <TabsTrigger value="alerts">
             Alerts ({alerts.length})
@@ -124,6 +129,10 @@ export function UserDashboard({
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="charts" className="space-y-4">
+          <ChartView tokens={tokens} />
         </TabsContent>
 
         <TabsContent value="alerts" className="space-y-4">

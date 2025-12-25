@@ -29,6 +29,25 @@ export interface PriceHistory {
   volume: number
 }
 
+export interface ChartDataPoint {
+  timestamp: number
+  price: number
+  volume: number
+  high?: number
+  low?: number
+  open?: number
+  close?: number
+}
+
+export type ChartTimeframe = '1H' | '24H' | '7D' | '30D' | '90D' | '1Y'
+
+export interface ChartConfig {
+  timeframe: ChartTimeframe
+  showVolume: boolean
+  showMA: boolean
+  maLength: number
+}
+
 export type UserRole = 'user' | 'admin' | 'developer'
 
 export interface RpcEndpoint {

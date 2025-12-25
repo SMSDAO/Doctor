@@ -1,4 +1,4 @@
-import { Token, RpcEndpoint } from './types'
+import { Token, RpcEndpoint, ChartDataPoint, ChartTimeframe } from './types'
 
 export const generateMockTokens = (): Token[] => {
   const tokens = [
@@ -87,4 +87,108 @@ export const updateTokenPrices = (tokens: Token[]): Token[] => {
     volume24h: token.volume24h * (1 + (Math.random() - 0.5) * 0.05),
     lastUpdated: Date.now(),
   }))
+}
+
+export const generateHistoricalData = (
+  currentPrice: number,
+  timeframe: ChartTimeframe
+): ChartDataPoint[] => {
+  const dataPoints: ChartDataPoint[] = []
+  const now = Date.now()
+  
+  let intervals: number
+  let intervalMs: number
+  
+  switch (timeframe) {
+    case '1H':
+      intervals = 60
+      intervalMs = 60 * 1000
+      break
+    case '24H':
+      intervals = 144
+      intervalMs = 10 * 60 * 1000
+      break
+    case '7D':
+      intervals = 168
+      intervalMs = 60 * 60 * 1000
+      break
+    case '30D':
+      intervals = 180
+      intervalMs = 4 * 60 * 60 * 1000
+      break
+    case '90D':
+      intervals = 180
+      intervalMs = 12 * 60 * 60 * 1000
+      break
+    case '1Y':
+      intervals = 365
+      intervalMs = 24 * 60 * 60 * 1000
+      break
+    default:
+      intervals = 144
+      intervalMs = 10 * 60 * 1000
+  }
+  
+  let price = currentPrice * (1 - 0.2 + Math.random() * 0.4)
+  const volatilityBase = 0.02
+  const trendDirection = Math.random() > 0.5 ? 1 : -1
+  const trendStrength = 0.0001
+  
+  for (let i = intervals; i >= 0; i--) {
+    const timestamp = now - (i * intervalMs)
+    const trend = trendDirection * trendStrength * (intervals - i)
+    const volatility = volatilityBase * (1 + Math.random() * 0.5)
+    const change = (Math.random() - 0.5) * volatility + trend
+    
+    price = price * (1 + change)
+    const intrabarVolatility = price * 0.01
+    
+    const open = price
+    const close = price * (1 + (Math.random() - 0.5) * 0.005)
+    const high = Math.max(open, close) * (1 + Math.random() * 0.01)
+    const low = Math.min(open, close) * (1 - Math.random() * 0.01)
+    
+    dataPoints.push({
+      timestamp,
+      price: close,
+      volume: Math.random() * 1000000 + 100000,
+      open,
+      close,
+      high,
+      low,
+    })
+  }
+  
+  const lastPoint = dataPoints[dataPoints.length - 1]
+  const priceRatio = currentPrice / (lastPoint.close ?? lastPoint.price)
+  
+  return dataPoints.map(point => ({
+    ...point,
+    price: point.price * priceRatio,
+    open: (point.open ?? point.price) * priceRatio,
+    close: (point.close ?? point.price) * priceRatio,
+    high: (point.high ?? point.price) * priceRatio,
+    low: (point.low ?? point.price) * priceRatio,
+  }))
+}
+
+export const calculateMovingAverage = (
+  data: ChartDataPoint[],
+  length: number
+): number[] => {
+  const ma: number[] = []
+  
+  for (let i = 0; i < data.length; i++) {
+    if (i < length - 1) {
+      ma.push(NaN)
+    } else {
+      let sum = 0
+      for (let j = 0; j < length; j++) {
+        sum += data[i - j].price
+      }
+      ma.push(sum / length)
+    }
+  }
+  
+  return ma
 }
