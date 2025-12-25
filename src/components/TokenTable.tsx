@@ -114,7 +114,7 @@ export function TokenTable({ tokens, watchlist, onToggleWatchlist, onCreateAlert
             return (
               <tr 
                 key={token.id} 
-                className="border-b border-border hover:bg-card/50 transition-colors group cursor-pointer"
+                className="border-b border-border hover:bg-card/50 hover:border-l-4 hover:border-l-accent hover:glow-border transition-all group cursor-pointer"
                 onClick={() => onViewDetails(token)}
               >
                 <td className="px-4 py-3">
@@ -128,7 +128,7 @@ export function TokenTable({ tokens, watchlist, onToggleWatchlist, onCreateAlert
                     <Star 
                       size={20} 
                       weight={isWatched ? 'fill' : 'regular'}
-                      className={isWatched ? 'text-accent' : 'text-muted-foreground hover:text-accent'}
+                      className={isWatched ? 'text-accent glow-blue' : 'text-muted-foreground hover:text-accent'}
                     />
                   </button>
                 </td>
@@ -162,6 +162,7 @@ export function TokenTable({ tokens, watchlist, onToggleWatchlist, onCreateAlert
                         e.stopPropagation()
                         onCreateAlert(token)
                       }}
+                      className="hover:glow-blue"
                     >
                       <Bell size={16} />
                     </Button>
@@ -172,6 +173,7 @@ export function TokenTable({ tokens, watchlist, onToggleWatchlist, onCreateAlert
                         e.stopPropagation()
                         onViewDetails(token)
                       }}
+                      className="hover:glow-purple"
                     >
                       <Eye size={16} />
                     </Button>

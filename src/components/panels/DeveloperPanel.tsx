@@ -56,7 +56,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold mb-2">Developer Panel</h1>
+        <h1 className="text-4xl font-bold mb-2 glow-text">Developer Panel</h1>
         <p className="text-muted-foreground">API management and testing tools</p>
       </div>
 
@@ -79,7 +79,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="glow-border">
           <CardHeader>
             <CardTitle>API Keys</CardTitle>
           </CardHeader>
@@ -92,8 +92,9 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
                   placeholder="Key name (e.g., Production)"
                   value={newKeyName}
                   onChange={(e) => setNewKeyName(e.target.value)}
+                  className="glow-border"
                 />
-                <Button onClick={handleCreateKey}>Create</Button>
+                <Button onClick={handleCreateKey} className="glow-accent">Create</Button>
               </div>
             </div>
 
@@ -104,23 +105,24 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
                 </p>
               ) : (
                 apiKeys.map(key => (
-                  <div key={key.id} className="p-4 border border-border rounded-lg space-y-2">
+                  <div key={key.id} className="p-4 border border-border rounded-lg space-y-2 hover:glow-blue transition-all">
                     <div className="flex items-start justify-between">
                       <div className="space-y-1 flex-1">
                         <h3 className="font-semibold">{key.name}</h3>
                         <div className="flex items-center gap-2">
-                          <code className="text-xs font-mono bg-muted px-2 py-1 rounded">
+                          <code className="text-xs font-mono bg-muted px-2 py-1 rounded glow-purple">
                             {key.key}
                           </code>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => copyApiKey(key.key)}
+                            className="hover:glow-blue"
                           >
                             <Copy size={14} />
                           </Button>
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-muted-foreground data-font">
                           Requests: {key.requestCount.toLocaleString()} | 
                           Last used: {key.lastUsed ? new Date(key.lastUsed).toLocaleDateString() : 'Never'}
                         </div>
@@ -140,7 +142,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glow-border">
           <CardHeader>
             <CardTitle>API Playground</CardTitle>
           </CardHeader>
@@ -152,6 +154,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
                 value={testEndpoint}
                 onChange={(e) => setTestEndpoint(e.target.value)}
                 placeholder="e.g., getAccountInfo"
+                className="glow-border"
               />
             </div>
 
@@ -163,11 +166,11 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
                 onChange={(e) => setTestParams(e.target.value)}
                 placeholder='{"address": "..."}'
                 rows={4}
-                className="font-mono text-sm"
+                className="font-mono text-sm glow-border"
               />
             </div>
 
-            <Button onClick={handleTestEndpoint} className="w-full">
+            <Button onClick={handleTestEndpoint} className="w-full glow-accent">
               <Lightning size={18} />
               Test Request
             </Button>
@@ -175,7 +178,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
             {testResult && (
               <div className="space-y-2">
                 <Label>Response</Label>
-                <pre className="bg-muted p-4 rounded text-xs overflow-auto max-h-64">
+                <pre className="bg-muted p-4 rounded text-xs overflow-auto max-h-64 glow-purple">
                   {testResult}
                 </pre>
               </div>
@@ -184,7 +187,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
         </Card>
       </div>
 
-      <Card>
+      <Card className="glow-border">
         <CardHeader>
           <CardTitle>API Documentation</CardTitle>
         </CardHeader>
@@ -194,7 +197,7 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
             <p className="text-sm text-muted-foreground">
               Include your API key in the <code className="bg-muted px-1 py-0.5 rounded text-xs">X-API-Key</code> header
             </p>
-            <pre className="bg-muted p-3 rounded text-xs overflow-auto">
+            <pre className="bg-muted p-3 rounded text-xs overflow-auto glow-border">
 {`curl -H "X-API-Key: your_api_key_here" \\
   https://api.jupitercan.io/v1/tokens`}
             </pre>
@@ -204,23 +207,23 @@ export function DeveloperPanel({ apiKeys, onCreateApiKey, onDeleteApiKey }: Deve
             <h3 className="font-semibold">Available Endpoints</h3>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
-                <Badge variant="secondary">GET</Badge>
-                <code className="text-xs">/v1/tokens</code>
+                <Badge variant="secondary" className="glow-purple">GET</Badge>
+                <code className="text-xs data-font">/v1/tokens</code>
                 <span className="text-muted-foreground">List all tokens</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Badge variant="secondary">GET</Badge>
-                <code className="text-xs">/v1/tokens/:address</code>
+                <Badge variant="secondary" className="glow-purple">GET</Badge>
+                <code className="text-xs data-font">/v1/tokens/:address</code>
                 <span className="text-muted-foreground">Get token details</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Badge variant="secondary">GET</Badge>
-                <code className="text-xs">/v1/prices</code>
+                <Badge variant="secondary" className="glow-purple">GET</Badge>
+                <code className="text-xs data-font">/v1/prices</code>
                 <span className="text-muted-foreground">Get current prices</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Badge variant="secondary">POST</Badge>
-                <code className="text-xs">/v1/alerts</code>
+                <Badge variant="secondary" className="glow-purple">POST</Badge>
+                <code className="text-xs data-font">/v1/alerts</code>
                 <span className="text-muted-foreground">Create price alert</span>
               </div>
             </div>

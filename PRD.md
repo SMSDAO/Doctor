@@ -74,20 +74,20 @@ The design should evoke the feeling of a high-tech command center for crypto tra
 
 ## Color Selection
 
-The color scheme draws inspiration from Solana's signature purple/teal palette mixed with Neo-Tokyo cyberpunk aesthetics, using high-contrast glowing accents against deep backgrounds.
+The color scheme draws inspiration from Solana's signature purple/blue palette mixed with Neo-Tokyo cyberpunk aesthetics, using high-contrast glowing accents against deep backgrounds with enhanced blue-purple saturation.
 
-- **Primary Color**: Deep purple (oklch(0.38 0.19 300)) - Represents premium blockchain technology, creates sophisticated foundation
+- **Primary Color**: Vivid purple (oklch(0.50 0.25 285)) - Represents premium blockchain technology, creates sophisticated foundation with intense glow
 - **Secondary Colors**: 
-  - Dark background (oklch(0.12 0.01 285)) - Almost black with subtle purple tint for depth
-  - Card surface (oklch(0.18 0.03 290)) - Slightly lighter than background for layering
-- **Accent Color**: Electric cyan (oklch(0.75 0.15 195)) - High-energy glow for CTAs, price increases, and interactive elements
+  - Dark background (oklch(0.10 0.03 270)) - Deep blue-black with purple tint for maximum depth
+  - Card surface (oklch(0.15 0.05 275)) - Slightly lighter than background with stronger purple hue for layering
+- **Accent Color**: Electric blue-purple (oklch(0.65 0.20 240)) - High-energy glow for CTAs, price increases, and interactive elements
 - **Success Color**: Vibrant green (oklch(0.65 0.18 150)) - For positive price changes and bullish indicators
-- **Destructive Color**: Warm red (oklch(0.60 0.22 25)) - For negative price changes and bearish indicators
+- **Destructive Color**: Warm red (oklch(0.58 0.24 25)) - For negative price changes and bearish indicators
 - **Foreground/Background Pairings**: 
-  - Background (oklch(0.12 0.01 285)): Foreground text (oklch(0.85 0.02 290)) - Ratio 15.2:1 ✓
-  - Card (oklch(0.18 0.03 290)): Card text (oklch(0.85 0.02 290)) - Ratio 10.8:1 ✓
-  - Primary (oklch(0.38 0.19 300)): White text (oklch(0.98 0 0)) - Ratio 7.2:1 ✓
-  - Accent (oklch(0.75 0.15 195)): Dark text (oklch(0.12 0.01 285)) - Ratio 11.5:1 ✓
+  - Background (oklch(0.10 0.03 270)): Foreground text (oklch(0.90 0.02 280)) - Ratio 16.8:1 ✓
+  - Card (oklch(0.15 0.05 275)): Card text (oklch(0.90 0.02 280)) - Ratio 12.4:1 ✓
+  - Primary (oklch(0.50 0.25 285)): White text (oklch(0.98 0 0)) - Ratio 6.8:1 ✓
+  - Accent (oklch(0.65 0.20 240)): White text (oklch(0.98 0 0)) - Ratio 7.5:1 ✓
 
 ## Font Selection
 

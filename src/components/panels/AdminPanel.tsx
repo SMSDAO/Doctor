@@ -18,7 +18,7 @@ export function AdminPanel({ rpcEndpoints, onToggleEndpoint }: AdminPanelProps) 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold mb-2">Admin Panel</h1>
+        <h1 className="text-4xl font-bold mb-2 glow-text">Admin Panel</h1>
         <p className="text-muted-foreground">System configuration and monitoring</p>
       </div>
 
@@ -46,18 +46,18 @@ export function AdminPanel({ rpcEndpoints, onToggleEndpoint }: AdminPanelProps) 
         />
       </div>
 
-      <Card>
+      <Card className="glow-border">
         <CardHeader>
           <CardTitle>RPC Endpoint Management</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {rpcEndpoints.map(endpoint => (
-              <div key={endpoint.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+              <div key={endpoint.id} className="flex items-center justify-between p-4 border border-border rounded-lg hover:glow-blue transition-all">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold">{endpoint.name}</h3>
-                    <Badge variant={endpoint.isActive ? 'default' : 'secondary'}>
+                    <Badge variant={endpoint.isActive ? 'default' : 'secondary'} className={endpoint.isActive ? 'glow-purple' : ''}>
                       {endpoint.isActive ? 'Active' : 'Inactive'}
                     </Badge>
                   </div>
@@ -74,6 +74,7 @@ export function AdminPanel({ rpcEndpoints, onToggleEndpoint }: AdminPanelProps) 
                 <Button
                   variant={endpoint.isActive ? 'destructive' : 'default'}
                   onClick={() => onToggleEndpoint(endpoint.id)}
+                  className={endpoint.isActive ? '' : 'glow-accent'}
                 >
                   {endpoint.isActive ? 'Disable' : 'Enable'}
                 </Button>
@@ -84,7 +85,7 @@ export function AdminPanel({ rpcEndpoints, onToggleEndpoint }: AdminPanelProps) 
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
+        <Card className="glow-border">
           <CardHeader>
             <CardTitle>System Status</CardTitle>
           </CardHeader>
@@ -108,7 +109,7 @@ export function AdminPanel({ rpcEndpoints, onToggleEndpoint }: AdminPanelProps) 
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glow-border">
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
@@ -116,19 +117,19 @@ export function AdminPanel({ rpcEndpoints, onToggleEndpoint }: AdminPanelProps) 
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">New users today</span>
-                <span className="font-semibold">47</span>
+                <span className="font-semibold data-font">47</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Alerts triggered</span>
-                <span className="font-semibold">1,203</span>
+                <span className="font-semibold data-font">1,203</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">API calls (24h)</span>
-                <span className="font-semibold">847,293</span>
+                <span className="font-semibold data-font">847,293</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Failed requests</span>
-                <span className="font-semibold">127</span>
+                <span className="font-semibold data-font">127</span>
               </div>
             </div>
           </CardContent>

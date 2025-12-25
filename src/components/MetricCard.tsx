@@ -16,14 +16,15 @@ export function MetricCard({ title, value, change, icon, isLoading }: MetricCard
   const hasNegativeChange = change !== undefined && change < 0
 
   return (
-    <Card className="overflow-hidden relative">
-      <CardHeader className="pb-2">
+    <Card className="overflow-hidden relative glow-border hover:glow-blue transition-all duration-300">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+      <CardHeader className="pb-2 relative z-10">
         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
           {title}
-          {icon && <span className="text-accent">{icon}</span>}
+          {icon && <span className="text-accent glow-blue">{icon}</span>}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10">
         <div className="flex items-end justify-between">
           <motion.div 
             className="text-3xl font-bold data-font"
@@ -32,7 +33,7 @@ export function MetricCard({ title, value, change, icon, isLoading }: MetricCard
             key={value}
           >
             {isLoading ? (
-              <div className="h-9 w-32 bg-muted animate-pulse rounded" />
+              <div className="h-9 w-32 bg-muted animate-pulse rounded glow-purple" />
             ) : (
               value
             )}

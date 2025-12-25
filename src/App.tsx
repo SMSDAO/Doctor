@@ -139,66 +139,74 @@ function App() {
   })
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="container mx-auto px-4 lg:px-6">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <Lightning size={32} weight="fill" className="text-accent" />
-                <h1 className="text-2xl font-bold glow-text">Jupiter Scan</h1>
-              </div>
-              <Badge variant="secondary" className="hidden sm:inline-flex">
-                Beta
-              </Badge>
-              {activeAlertCount > 0 && (
-                <Badge variant="outline" className="hidden sm:inline-flex border-accent/50 text-accent">
-                  <Bell size={14} weight="fill" className="mr-1 animate-pulse" />
-                  {activeAlertCount} Alert{activeAlertCount > 1 ? 's' : ''} Active
+    <div className="min-h-screen bg-background relative overflow-x-hidden">
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse-glow"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-primary/5 rounded-full blur-[150px]"></div>
+      </div>
+      
+      <div className="relative z-10">
+        <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 glow-border">
+          <div className="container mx-auto px-4 lg:px-6">
+            <div className="flex h-16 items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <Lightning size={32} weight="fill" className="text-accent glow-blue" />
+                  <h1 className="text-2xl font-bold glow-text text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-primary">Jupiter Scan</h1>
+                </div>
+                <Badge variant="secondary" className="hidden sm:inline-flex glow-purple">
+                  Beta
                 </Badge>
-              )}
-            </div>
+                {activeAlertCount > 0 && (
+                  <Badge variant="outline" className="hidden sm:inline-flex border-accent/50 text-accent glow-blue">
+                    <Bell size={14} weight="fill" className="mr-1 animate-pulse" />
+                    {activeAlertCount} Alert{activeAlertCount > 1 ? 's' : ''} Active
+                  </Badge>
+                )}
+              </div>
 
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-              >
-                <Lightning size={16} className={isRefreshing ? 'animate-spin' : ''} />
-                Refresh
-              </Button>
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRefresh}
+                  disabled={isRefreshing}
+                  className="glow-accent"
+                >
+                  <Lightning size={16} className={isRefreshing ? 'animate-spin' : ''} />
+                  Refresh
+                </Button>
 
-              <Select value={userRole ?? 'user'} onValueChange={(value) => setUserRole(value as UserRole)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">
-                    <div className="flex items-center gap-2">
-                      <User size={16} />
-                      User
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="admin">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck size={16} />
-                      Admin
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="developer">
-                    <div className="flex items-center gap-2">
-                      <Code size={16} />
-                      Developer
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                <Select value={userRole ?? 'user'} onValueChange={(value) => setUserRole(value as UserRole)}>
+                  <SelectTrigger className="w-40 glow-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">
+                      <div className="flex items-center gap-2">
+                        <User size={16} />
+                        User
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="admin">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck size={16} />
+                        Admin
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="developer">
+                      <div className="flex items-center gap-2">
+                        <Code size={16} />
+                        Developer
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       <main className="container mx-auto px-4 lg:px-6 py-8">
         {userRole === 'user' && (
@@ -229,6 +237,7 @@ function App() {
           />
         )}
       </main>
+      </div>
 
       <CreateAlertDialog
         token={selectedToken}
