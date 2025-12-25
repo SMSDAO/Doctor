@@ -1,0 +1,300 @@
+project:
+  name: "Jupiter Scan"
+  codename: "Smart Brain Oracle"
+  tagline: "Solana-Style Live Scan, Token Analytics & Risk Intelligence Platform"
+  inspiration: "https://solscan.io"
+  website: "https://domain.com"
+  installer_url: "https://domain.com/install"
+  donation_address: "monads.skr"
+  license: "MIT"
+  maturity: "Production-Ready Blueprint"
+
+core_goal:
+  description: >
+    Build a Solana-style live-scan, analytics, and risk intelligence platform
+    with real-time price monitoring, deep token analytics, contract risk
+    assessment, and multi-role dashboards using a PHP hybrid architecture
+    optimized for shared hosting and localhost.
+  guarantees:
+    - shared_hosting_compatible
+    - localhost_ready
+    - vps_cloud_ready
+    - no_heavy_dependencies
+    - no_node_build_required
+
+technology_stack:
+  backend:
+    language: "PHP"
+    version: ">=8.0"
+    architecture: "Hybrid MVC (Laravel-like, lightweight)"
+  frontend:
+    type: "Hybrid"
+    options:
+      - Vanilla JavaScript
+      - Lightweight Vue (CDN)
+      - Lightweight React (CDN)
+    build_tools: "None"
+  database:
+    engine: "MySQL"
+    access: "PDO"
+  api:
+    style: "REST"
+    format: "JSON"
+  deployment:
+    servers: [Apache, Nginx]
+
+architecture:
+  pattern: [MVC, ServiceLayer, RepositoryLayer]
+  request_flow:
+    - HTTP_Request
+    - Router
+    - Middleware
+    - Controller
+    - Service
+    - Repository
+    - Database
+    - Response
+  principles:
+    - clean_code
+    - separation_of_concerns
+    - security_first
+    - extensible
+    - analytics_driven
+
+features:
+  live_scan_and_monitoring:
+    rpc_layer:
+      abstraction: "SolanaRpcClient"
+      retry_logic: true
+      rate_limiting: true
+      error_logging: true
+      configurable_endpoints: true
+    realtime_strategy:
+      primary: "AJAX timed polling"
+      fallback: "WebSocket-style simulation"
+    monitoring:
+      - real_time_price
+      - real_time_volume
+      - transaction_lookup
+      - address_lookup
+      - historical_snapshots
+
+  token_analytics:
+    description: "Advanced on-chain token intelligence engine"
+    features:
+      real_time_metrics:
+        - price_tracking
+        - volume_tracking
+      historical_analysis:
+        - historical_trading_data
+        - price_trend_analysis
+        - volume_trend_analysis
+      liquidity_analysis:
+        - liquidity_pool_monitoring
+        - liquidity_change_detection
+        - pool_concentration_metrics
+      holder_analysis:
+        - holder_distribution
+        - whale_concentration
+        - holder_growth_rate
+      transaction_intelligence:
+        - transaction_pattern_analysis
+        - abnormal_activity_detection
+        - wash_trade_signals
+
+  risk_assessment:
+    description: "Token & contract risk intelligence layer"
+    contract_security:
+      - contract_metadata_analysis
+      - known_exploit_pattern_detection
+    ownership_and_permissions:
+      - ownership_concentration_check
+      - admin_privilege_detection
+      - upgrade_authority_analysis
+    trading_restrictions:
+      - blacklist_whitelist_detection
+      - transfer_limit_checks
+      - honeypot_pattern_detection
+    liquidity_risk:
+      - liquidity_lock_verification
+      - unlock_schedule_detection
+      - rug_pull_risk_scoring
+    social_and_community:
+      - social_presence_analysis
+      - community_growth_signals
+      - sentiment_proxy_metrics
+
+alerts:
+  types:
+    - price_above
+    - price_below
+    - percentage_change
+    - volume_spike
+    - liquidity_drop
+    - risk_score_change
+  delivery_channels:
+    - dashboard
+    - api
+    - email_ready
+
+roles_and_panels:
+  user:
+    - dashboard
+    - watchlist
+    - analytics_view
+    - alerts
+    - profile
+    - theme_settings
+  admin:
+    - user_management
+    - system_configuration
+    - rpc_monitoring
+    - logs_viewer
+    - risk_rules_config
+  developer:
+    - rpc_endpoint_manager
+    - api_key_manager
+    - api_playground
+    - analytics_debug_tools
+
+ui_ux:
+  theme:
+    default: "NEO Dark Glow"
+    alternate: "Day Mode"
+  effects:
+    - digital_glow
+    - 3D_aura_FX
+    - live_price_animation
+    - risk_heatmap_visuals
+  components:
+    - cards
+    - tables
+    - modals
+    - tabs
+    - alerts
+    - charts
+    - analytics_panels
+
+database:
+  engine: "MySQL"
+  migrations:
+    - users
+    - user_profiles
+    - tokens
+    - token_prices
+    - token_analytics
+    - liquidity_pools
+    - holder_snapshots
+    - risk_assessments
+    - alerts
+    - rpc_endpoints
+    - api_keys
+    - logs
+  indexes:
+    - token_prices(token_id, created_at)
+    - token_analytics(token_id, metric, created_at)
+    - risk_assessments(token_id, risk_level)
+
+cron_jobs:
+  scanners:
+    price_scanner:
+      schedule: "*/1 * * * *"
+      task: "Fetch prices & volumes"
+    analytics_scanner:
+      schedule: "*/5 * * * *"
+      task: "Update analytics & metrics"
+    risk_scanner:
+      schedule: "*/10 * * * *"
+      task: "Evaluate contract & liquidity risk"
+
+documentation:
+  strategy: "Auto-update after each generator execution"
+  outputs:
+    - README.md
+    - CHANGELOG.md
+    - API_DOCS.md
+    - ANALYTICS_DOCS.md
+    - RISK_MODEL.md
+  style:
+    - attractive_layout
+    - badges
+    - diagrams
+    - screenshots
+
+community:
+  contributors:
+    guidelines: "CONTRIBUTING.md"
+    code_of_conduct: "CODE_OF_CONDUCT.md"
+  marketing:
+    channels:
+      - github
+      - twitter
+      - discord
+      - landing_page
+  sponsors_and_donations:
+    enabled: true
+    address: "monads.skr"
+    display:
+      - README_badge
+      - landing_page_section
+      - footer_widget
+
+generators:
+  php_scaffolding:
+    status: "EXECUTED"
+    outputs:
+      - app/Core/*
+      - app/Controllers/*
+      - app/Services/*
+      - app/Repositories/*
+      - install/*
+      - public/index.php
+
+  documentation_generator:
+    status: "EXECUTED"
+    outputs:
+      - README.md
+      - landing_page.html
+      - badges
+      - feature_sections
+      - analytics_overview
+      - risk_disclaimer
+
+  solana_rpc_generator:
+    status: "EXECUTED"
+    outputs:
+      - SolanaRpcClient.php
+      - RpcRetryHandler.php
+      - RpcRateLimiter.php
+      - RpcErrorMapper.php
+
+  ui_css_generator:
+    status: "EXECUTED"
+    outputs:
+      - neo_dark.css
+      - day_mode.css
+      - glow_effects.css
+      - aura_fx.css
+      - analytics_heatmaps.css
+
+ci_cd:
+  github_actions:
+    pipeline:
+      - php_syntax_check
+      - unit_tests
+      - security_scan
+      - analytics_validation
+
+roadmap:
+  phase_1: "Scaffold + installer"
+  phase_2: "Live scan + analytics"
+  phase_3: "Risk intelligence + alerts"
+  phase_4: "Community, sponsors & monetization"
+
+author:
+  role: "Expert PHP Hybrid Full-Stack Engineer"
+  focus:
+    - shared_hosting
+    - blockchain_analytics
+    - risk_intelligence
+    - secure_systems
