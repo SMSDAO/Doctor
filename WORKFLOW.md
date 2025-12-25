@@ -2,27 +2,27 @@
 
 ## Overview
 
-Jupiter Scan is a sophisticated Solana token monitoring platform with advanced charting, real-time price tracking, intelligent alert management, and sound notifications. The application features three distinct user roles (User, Admin, Developer) with dedicated panels and workflows.
-
 ---
 
-## 🎨 Visual Design
+###
 
-### Blue-Purple Glow Aesthetic
-- **Primary Color**: Vivid purple (oklch(0.50 0.25 285))
-- **Accent Color**: Electric blue-purple (oklch(0.65 0.20 240))
-- **Background**: Deep blue-black (oklch(0.10 0.03 270))
-- **Effects**: Enhanced glow effects with `glow-blue`, `glow-purple`, `glow-accent` classes
-- **Animations**: Pulsing glow backgrounds, smooth transitions, hover states
+- **Effects**: Enha
 
----
 
-## 👤 User Role Workflow
 
-### Dashboard Access
 1. **Default View**: User dashboard with four metric cards
-   - Total Market Cap (all tracked tokens)
    - 24h Volume (aggregate trading volume)
+   - Active Alerts (monitoring status)
+2. **Navigation Tabs**:
+
+   
+
+2. Sort by: Token, Price
+
+   - **Eye Icon**: V
+### Watchlist Management
+2. Access watchlist via dedicated tab
+4. Persists across sessions using `useKV`
    - Avg Price Change (market sentiment indicator)
    - Active Alerts (monitoring status)
 
@@ -48,56 +48,56 @@ Jupiter Scan is a sophisticated Solana token monitoring platform with advanced c
 
 ### Alert Creation Workflow
 1. Click bell icon or "Create Alert" button
-2. Dialog opens with alert configuration:
-   - **Condition**: Above, Below, % Increase, % Decrease, Volume Spike
-   - **Threshold**: Numeric value or percentage
-   - **Sound Notification**: Enable/disable audio alerts
-   - **Test Sound**: Preview alert sound before saving
-3. Save alert → Appears in Alerts tab
-4. Real-time monitoring begins automatically
-
-### Alert Monitoring Workflow
-1. Active alerts shown in header badge (pulsing bell icon)
-2. Background monitor checks prices every update (30s)
-3. When condition met:
-   - **Visual**: Toast notification appears (top-right)
-   - **Audio**: Sound plays (if enabled) - 440Hz beep for 0.3s
-   - **Status**: Alert marked as triggered with timestamp
-   - **Auto-deactivation**: Alert deactivates to prevent spam
-4. View triggered alerts in Alert History panel
-5. Toggle alerts on/off or delete as needed
-
-### Historical Charts Workflow
-1. Navigate to **Charts** tab
-2. Select token from dropdown
-3. Choose timeframe: 1H, 24H, 7D, 30D, 90D, 1Y
-4. Switch between **Line Chart** and **Candlestick Chart**
-5. Toggle overlays:
+4. Switch between **Line Chart** and **Ca
    - **Volume bars** (bottom panel)
-   - **Moving Average** (7, 14, or 30 day)
 6. Hover for detailed data points with tooltip
-7. Charts generated with D3.js for smooth interactions
 
-### Token Detail Workflow
 1. Click any token row in scanner
-2. Detail dialog opens with:
    - Large interactive price chart
-   - Token metadata (address, holders, liquidity)
-   - Quick actions: Add to watchlist, Create alert
-   - All timeframe options
-   - Chart type switching
-3. Close dialog to return to main view
+   - Quick actions: Add to watchlist, Create
 
----
 
-## 🛡️ Admin Role Workflow
 
-### Admin Panel Access
-1. Switch role to "Admin" in header dropdown
-2. Dashboard changes to admin-specific view
 
-### System Monitoring
+1. Switch role to "Adm
+
 1. **Metric Cards**:
+   - RPC Endpoints (active/total ratio)
+   - Success Rate (reliability metric)
+2. **System Status Panel**:
+   - Cache status
+
+3. **Recent Activity Panel**:
+   - Alerts triggered (24h)
+   - Failed requests
+### RPC Endpoint Management
+2. Each endpoint shows:
+   - Active/Inactiv
+   - Success rate (%)
+   - Enable/Disable endpoints
+   - Configure failover settings
+### Configuration Workflow
+
+4. View aggregated perfor
+
+
+
+1. Switch role to "Developer" in header dropdown
+
+1. **Create API Key**:
+   - Click "Create" butto
+   - Displayed with copy button
+
+   
+
+3. **Copy Key**:
+
+
+   - Click delete button
+   - Persists using `useKV`
+
+   - Enter endpoint n
+   - Click "Test Req
    - Active Users (with growth percentage)
    - RPC Endpoints (active/total ratio)
    - Avg Response Time (performance indicator)
@@ -198,174 +198,174 @@ Jupiter Scan is a sophisticated Solana token monitoring platform with advanced c
    - Example curl commands
    - Key usage patterns
 
-2. **Available Endpoints**:
-   - `GET /v1/tokens` - List all tokens
-   - `GET /v1/tokens/:address` - Get token details
-   - `GET /v1/prices` - Get current prices
-   - `POST /v1/alerts` - Create price alert
-
-3. **Rate Limiting**:
-   - 1000 requests/minute per key
-   - Displayed in metrics
-
----
-
-## 🔄 Data Persistence
-
-All user data persists across sessions using `useKV`:
-
-### Stored Data
-- **Watchlist**: Array of token IDs (`watchlist`)
-- **Alerts**: Array of alert objects (`alerts`)
-- **API Keys**: Array of key objects (`api-keys`)
-- **User Role**: Selected role preference (`user-role`)
-
-### Data Safety
-- Functional updates prevent race conditions
-- Multi-tab synchronization supported
-- No data loss on refresh
-
----
-
-## 🎯 Key Features Summary
-
-### Real-Time Monitoring
-- 30-second automatic price updates
-- Manual refresh button with loading state
-- Live alert condition checking
-
-### Sound Notifications
-- Configurable per-alert
-- Test before enabling
-- 440Hz beep (0.3s duration)
-- Prevents audio overlap with cooldown
-
-### Advanced Analytics
-- D3-powered charts
-- Multiple timeframes
-- Candlestick and line views
-- Moving average overlays
-- Volume visualization
-
-### Multi-Role Support
-- **User**: Trading and monitoring
-- **Admin**: System management
-- **Developer**: API integration
-
-### Visual Excellence
-- Blue-purple glow aesthetic
-- Smooth animations
-- Hover effects on all interactive elements
-- Responsive design (mobile-friendly)
-- Gradient backgrounds with blur effects
-
----
-
-## 🚀 Quick Start Guide
-
-1. **First Time User**:
-   - App loads with default User role
-   - View all tokens in scanner
-   - Star favorites to build watchlist
-   - Create alerts for price movements
-
-2. **Admin Setup**:
-   - Switch to Admin role
-   - Review RPC endpoint health
-   - Monitor system metrics
+   - Review RPC endpoint he
    - Check recent activity
-
 3. **Developer Integration**:
-   - Switch to Developer role
    - Create API key
-   - Test endpoints in playground
    - Review documentation
-   - Integrate with external apps
 
----
 
-## 📊 Data Flow
 
-### Token Data
-1. Mock data generated on app load
-2. Prices update every 30 seconds
-3. Sort and filter in real-time
-4. No external API calls (demo mode)
+1. Mock data generated on
 
-### Alert System
-1. User creates alert
-2. Saved to persistent storage
-3. Background monitor checks conditions
-4. Triggers notification when met
-5. Updates alert status
-6. Logs trigger timestamp
 
-### Role Switching
-1. User selects role from dropdown
-2. Preference saved to `useKV`
-3. Main content swaps to role panel
-4. Header updates to show role
+
+3. Background monitor 
+
+
+
+3. Main content
 5. Persists on refresh
-
 ---
-
 ## 🎨 Visual Effects Guide
-
 ### Glow Classes
-- `.glow-text` - Text glow (title elements)
-- `.glow-border` - Border glow (cards, inputs)
-- `.glow-accent` - Blue glow (CTAs, active states)
-- `.glow-purple` - Purple glow (badges, highlights)
-- `.glow-blue` - Electric blue glow (hover states)
-- `.glow-intense` - Strong glow (important elements)
-- `.animate-pulse-glow` - Animated pulsing glow (backgrounds)
 
-### Component Enhancements
-- Metric cards: Gradient backgrounds + hover glow
-- Table rows: Left border accent on hover
-- Buttons: Glow effect on primary actions
-- Inputs: Focus glow rings
-- Badges: Role-based glow colors
-- Charts: Gradient fills and smooth animations
+- `.glow-purple
+- `.glow-intense` - Strong glow (important e
 
----
+- Metric cards: Gradient 
 
-## 🔧 Technical Architecture
+- B
 
-### Frontend Stack
+
+
 - React 19.2.0
-- TypeScript
 - Tailwind CSS (v4)
-- shadcn/ui components
 - Phosphor Icons
-- Framer Motion (animations)
 - D3.js (charts)
-- Sonner (toasts)
 
-### State Management
-- React hooks (useState, useEffect)
-- useKV for persistence
-- Functional updates for safety
-
+- React hooks (useState
+- Functional updates for
 ### Sound System
-- Web Audio API
 - OscillatorNode for tones
-- GainNode for volume control
 - Graceful degradation if unavailable
 
----
-
-## 📝 Future Enhancements
-
-- Real Solana RPC integration
-- WebSocket price streams
+## 📝 Future Enhanceme
+- Real Solana RPC i
 - User authentication
-- Portfolio tracking
-- Advanced charting indicators
-- Export alerts/watchlist
+- Advanced charting indicato
 - Email notifications
-- Mobile app
 
----
 
-**Built with ⚡ and 💜 for the Solana ecosystem**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
