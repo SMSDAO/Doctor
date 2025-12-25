@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
 import { ChartDataPoint, ChartTimeframe } from '@/lib/types'
-import { calculateMovingAverage } from '@/lib/mockData'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -21,7 +20,7 @@ export function PriceChart({
   data,
   timeframe,
   onTimeframeChange,
-  showVolume = true,
+  showVolume = false,
   showMA = false,
   maLength = 20,
   tokenSymbol = '',
@@ -33,7 +32,14 @@ export function PriceChart({
 
   const maData = useMemo(() => {
     if (!showMA || data.length === 0) return []
-    return calculateMovingAverage(data, maLength)
+
+    const ma: Array<{ timestamp: number; value: number }> = []
+    for (let i = maLength - 1; i < data.length; i++) {
+      const slice = data.slice(i - maLength + 1, i + 1)
+      const avg = slice.reduce((sum, d) => sum + d.price, 0) / maLength
+      ma.push({ timestamp: data[i].timestamp, value: avg })
+    }
+    return ma
   }, [data, showMA, maLength])
 
   useEffect(() => {
@@ -42,7 +48,7 @@ export function PriceChart({
         const { width } = containerRef.current.getBoundingClientRect()
         setDimensions({
           width,
-          height: showVolume ? 400 : 320,
+          height: showVolume ? 520 : 400,
         })
       }
     }
@@ -60,14 +66,13 @@ export function PriceChart({
 
     const margin = { top: 20, right: 60, bottom: showVolume ? 120 : 40, left: 60 }
     const width = dimensions.width - margin.left - margin.right
-    const height = dimensions.height - margin.top - margin.bottom
     const volumeHeight = showVolume ? 80 : 0
+    const height = dimensions.height - margin.top - margin.bottom
+    const priceHeight = height - volumeHeight - (showVolume ? 20 : 0)
 
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`)
-
-    const priceHeight = height - volumeHeight - (showVolume ? 20 : 0)
 
     const xScale = d3
       .scaleTime()
@@ -141,37 +146,37 @@ export function PriceChart({
       .y1(d => yPriceScale(d.price))
       .curve(d3.curveMonotoneX)
 
-    const areaGradient = g
-      .append('defs')
-      .append('linearGradient')
-      .attr('id', 'areaGradient')
-      .attr('x1', '0%')
-      .attr('y1', '0%')
-      .attr('x2', '0%')
-      .attr('y2', '100%')
-
-    areaGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', 'oklch(0.75 0.15 195)')
-      .attr('stop-opacity', 0.3)
-
-    areaGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', 'oklch(0.75 0.15 195)')
-      .attr('stop-opacity', 0.02)
-
-    g.append('path')
-      .datum(data)
-      .attr('fill', 'url(#areaGradient)')
-      .attr('d', area)
-
     const line = d3
       .line<ChartDataPoint>()
       .x(d => xScale(new Date(d.timestamp)))
       .y(d => yPriceScale(d.price))
       .curve(d3.curveMonotoneX)
+
+    const gradient = svg
+      .append('defs')
+      .append('linearGradient')
+      .attr('id', 'price-gradient')
+      .attr('x1', '0%')
+      .attr('x2', '0%')
+      .attr('y1', '0%')
+      .attr('y2', '100%')
+
+    gradient
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', 'oklch(0.75 0.15 195)')
+      .attr('stop-opacity', 0.3)
+
+    gradient
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', 'oklch(0.75 0.15 195)')
+      .attr('stop-opacity', 0)
+
+    g.append('path')
+      .datum(data)
+      .attr('fill', 'url(#price-gradient)')
+      .attr('d', area)
 
     g.append('path')
       .datum(data)
@@ -179,14 +184,12 @@ export function PriceChart({
       .attr('stroke', 'oklch(0.75 0.15 195)')
       .attr('stroke-width', 2)
       .attr('d', line)
-      .style('filter', 'drop-shadow(0 0 4px oklch(0.75 0.15 195 / 0.5))')
 
     if (showMA && maData.length > 0) {
       const maLine = d3
-        .line<number>()
-        .defined(d => !isNaN(d))
-        .x((_, i) => xScale(new Date(data[i].timestamp)))
-        .y(d => yPriceScale(d))
+        .line<{ timestamp: number; value: number }>()
+        .x(d => xScale(new Date(d.timestamp)))
+        .y(d => yPriceScale(d.value))
         .curve(d3.curveMonotoneX)
 
       g.append('path')
@@ -196,71 +199,70 @@ export function PriceChart({
         .attr('stroke-width', 1.5)
         .attr('stroke-dasharray', '4,4')
         .attr('d', maLine)
-        .style('opacity', 0.6)
     }
 
     if (showVolume) {
+      const volumeG = g
+        .append('g')
+        .attr('transform', `translate(0,${priceHeight + 20})`)
+
       const yVolumeScale = d3
         .scaleLinear()
         .domain([0, d3.max(data, d => d.volume)!])
         .range([volumeHeight, 0])
 
-      const volumeG = g
-        .append('g')
-        .attr('transform', `translate(0,${priceHeight + 20})`)
+      data.forEach((d, i) => {
+        const isBullish = i === 0 ? true : d.price >= data[i - 1].price
 
-      const barWidth = Math.max(1, width / data.length - 1)
-
-      volumeG
-        .selectAll('rect')
-        .data(data)
-        .enter()
-        .append('rect')
-        .attr('x', d => xScale(new Date(d.timestamp)) - barWidth / 2)
-        .attr('y', d => yVolumeScale(d.volume))
-        .attr('width', barWidth)
-        .attr('height', d => volumeHeight - yVolumeScale(d.volume))
-        .attr('fill', (_, i) => {
-          if (i === 0) return 'oklch(0.55 0.02 290 / 0.3)'
-          return data[i].price >= data[i - 1].price
-            ? 'oklch(0.65 0.18 150 / 0.3)'
-            : 'oklch(0.60 0.22 25 / 0.3)'
-        })
-        .attr('rx', 1)
+        volumeG
+          .append('rect')
+          .attr('x', xScale(new Date(d.timestamp)) - 2)
+          .attr('y', yVolumeScale(d.volume))
+          .attr('width', 4)
+          .attr('height', volumeHeight - yVolumeScale(d.volume))
+          .attr('fill', isBullish ? 'oklch(0.65 0.18 150 / 0.3)' : 'oklch(0.60 0.22 25 / 0.3)')
+          .attr('rx', 1)
+      })
     }
 
-    const bisect = d3.bisector<ChartDataPoint, Date>(d => new Date(d.timestamp)).left
+    const focus = g
+      .append('g')
+      .attr('class', 'focus')
+      .style('display', 'none')
 
-    const focus = g.append('g').style('display', 'none')
+    focus
+      .append('circle')
+      .attr('r', 4)
+      .attr('fill', 'oklch(0.75 0.15 195)')
+      .attr('stroke', 'oklch(0.12 0.01 285)')
+      .attr('stroke-width', 2)
 
     focus
       .append('line')
       .attr('class', 'crosshair-x')
       .attr('y1', 0)
       .attr('y2', priceHeight)
-      .style('stroke', 'oklch(0.75 0.15 195)')
+      .style('stroke', 'oklch(0.75 0.15 195 / 0.5)')
       .style('stroke-width', 1)
-      .style('stroke-dasharray', '3,3')
-      .style('opacity', 0.5)
+      .style('stroke-dasharray', '2,2')
 
-    focus
-      .append('circle')
-      .attr('r', 4)
-      .style('fill', 'oklch(0.75 0.15 195)')
-      .style('stroke', 'oklch(0.12 0.01 285)')
-      .style('stroke-width', 2)
+    const bisect = d3.bisector<ChartDataPoint, Date>((d) => new Date(d.timestamp)).left
 
-    const overlay = g
-      .append('rect')
+    g.append('rect')
       .attr('class', 'overlay')
       .attr('width', width)
       .attr('height', priceHeight)
       .style('fill', 'none')
       .style('pointer-events', 'all')
-
-    overlay
-      .on('mousemove', function (event) {
-        const [xPos] = d3.pointer(event)
+      .on('mouseover', () => {
+        focus.style('display', null)
+      })
+      .on('mouseout', () => {
+        focus.style('display', 'none')
+        setHoveredPoint(null)
+      })
+      .on('mousemove', function(event) {
+        const [xPos] = d3.pointer(event, this)
         const x0 = xScale.invert(xPos)
         const i = bisect(data, x0, 1)
         const d0 = data[i - 1]
@@ -268,17 +270,10 @@ export function PriceChart({
         
         if (!d0 || !d1) return
         
-        const d = x0.getTime() - d0.timestamp > d1.timestamp - x0.getTime() ? d1 : d0
+        const d = x0.getTime() - new Date(d0.timestamp).getTime() > new Date(d1.timestamp).getTime() - x0.getTime() ? d1 : d0
 
-        focus.style('display', null)
-        focus.select('.crosshair-x').attr('transform', `translate(${xScale(new Date(d.timestamp))},0)`)
-        focus.select('circle').attr('transform', `translate(${xScale(new Date(d.timestamp))},${yPriceScale(d.price)})`)
-
+        focus.attr('transform', `translate(${xScale(new Date(d.timestamp))},${yPriceScale(d.price)})`)
         setHoveredPoint(d)
-      })
-      .on('mouseout', () => {
-        focus.style('display', 'none')
-        setHoveredPoint(null)
       })
   }, [data, dimensions, showVolume, showMA, maData, timeframe])
 
