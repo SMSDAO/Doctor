@@ -21,6 +21,7 @@ export interface Alert {
   isActive: boolean
   createdAt: number
   triggeredAt?: number
+  soundEnabled?: boolean
 }
 
 export interface PriceHistory {

@@ -27,11 +27,11 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - Success criteria: Watchlist syncs across sessions, star icons reflect state, watchlist tab shows correct tokens
 
 **Smart Alert System**
-- Functionality: Configure price alerts with conditions (above/below threshold, % change, volume spike)
-- Purpose: Automated monitoring that notifies users when market conditions match their criteria
+- Functionality: Configure price alerts with conditions (above/below threshold, % change, volume spike) and real-time sound notifications when alerts trigger
+- Purpose: Automated monitoring that notifies users both visually and audibly when market conditions match their criteria, ensuring critical price movements aren't missed
 - Trigger: Click "Create Alert" button or alert icon on token
-- Progression: User clicks alert → Modal opens → Selects condition & threshold → Saves → Alert appears in dashboard → Triggers when condition met
-- Success criteria: Alerts persist in useKV, modal form validates input, alerts display in dedicated tab, can toggle on/off and delete
+- Progression: User clicks alert → Modal opens → Selects condition & threshold → Enables/disables sound notification → Tests sound → Saves → Alert appears in dashboard → Real-time monitor checks prices every update → When condition met → Plays sound (if enabled) + toast notification → Alert marked as triggered with timestamp → Auto-deactivates
+- Success criteria: Alerts persist in useKV, modal form validates input, sound notifications work reliably, alerts display in dedicated tab with trigger history, can toggle on/off and delete, triggered alerts show in history panel, sound test button works
 
 **Advanced Historical Charts**
 - Functionality: Interactive D3-powered charts showing historical price data with multiple timeframes (1H, 24H, 7D, 30D, 90D, 1Y), volume bars, moving averages, and two chart types (line and candlestick)
@@ -59,6 +59,9 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - **No Tokens Available** - Display empty state with helpful message and action to refresh or check connection
 - **Network Errors** - Show error toast, retry button, and graceful degradation to last known data
 - **Invalid Alert Configuration** - Form validation prevents saving alerts with missing/invalid threshold values
+- **Alert Sound Failure** - Gracefully degrade to visual-only notifications if Web Audio API is unavailable
+- **Multiple Simultaneous Alerts** - Queue sound notifications to prevent audio overlap, show combined toast
+- **Alert Cooldown** - Prevent alert from re-triggering for 60 seconds after first trigger to avoid notification spam
 - **Role Permission Mismatch** - Gracefully hide features not available to current role without breaking UI
 - **Watchlist Limit** - Optional cap at reasonable number (e.g., 50 tokens) with warning message
 - **Concurrent Updates** - Handle race conditions when multiple tabs modify watchlist/alerts using functional updates
@@ -108,6 +111,8 @@ Animations should feel snappy and purposeful - like data flowing through a high-
 - **Tab Transitions**: Fade content (200ms) while sliding indicator moves smoothly (300ms ease-in-out)
 - **Modal Entry**: Scale from 95% to 100% (200ms) with backdrop fade (150ms)
 - **Loading States**: Pulsing glow effect on skeleton loaders
+- **Alert Notification**: Toast slides in from top-right with bounce effect (300ms), sound plays simultaneously
+- **Active Alert Indicator**: Subtle pulse animation on bell icon in header when alerts are monitoring
 
 ## Component Selection
 
@@ -139,7 +144,8 @@ Animations should feel snappy and purposeful - like data flowing through a high-
 - **Icon Selection**: 
   - Lightning for refresh/updates (brand icon)
   - Star for watchlist
-  - Bell for alerts
+  - Bell for alerts and active monitoring indicator
+  - SpeakerHigh/SpeakerSlash for sound notification toggle
   - ChartLine for analytics/charts
   - ChartLineUp for candlestick charts
   - User/ShieldCheck/Code for role selection

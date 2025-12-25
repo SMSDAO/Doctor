@@ -3,6 +3,7 @@ import { useKV } from '@github/spark/hooks'
 import { Toaster, toast } from 'sonner'
 import { Token, Alert, UserRole, RpcEndpoint, ApiKey } from '@/lib/types'
 import { generateMockTokens, updateTokenPrices, mockRpcEndpoints } from '@/lib/mockData'
+import { useAlertMonitor } from '@/hooks/useAlertMonitor'
 import { UserDashboard } from '@/components/panels/UserDashboard'
 import { AdminPanel } from '@/components/panels/AdminPanel'
 import { DeveloperPanel } from '@/components/panels/DeveloperPanel'
@@ -11,7 +12,7 @@ import { TokenDetailDialog } from '@/components/TokenDetailDialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Lightning, User, ShieldCheck, Code } from '@phosphor-icons/react'
+import { Lightning, User, ShieldCheck, Code, Bell } from '@phosphor-icons/react'
 
 function App() {
   const [tokens, setTokens] = useState<Token[]>([])
@@ -92,6 +93,14 @@ function App() {
     toast.success('Alert deleted')
   }
 
+  const handleAlertTriggered = (alertId: string, triggeredAt: number) => {
+    setAlerts(current =>
+      (current ?? []).map(a => 
+        a.id === alertId ? { ...a, triggeredAt, isActive: false } : a
+      )
+    )
+  }
+
   const handleViewDetails = (token: Token) => {
     setSelectedToken(token)
     setDetailDialogOpen(true)
@@ -121,6 +130,13 @@ function App() {
   }
 
   const watchlistSet = new Set(safeWatchlist)
+  const activeAlertCount = safeAlerts.filter(a => a.isActive).length
+
+  useAlertMonitor({
+    tokens,
+    alerts: safeAlerts,
+    onAlertTriggered: handleAlertTriggered,
+  })
 
   return (
     <div className="min-h-screen bg-background">
@@ -135,6 +151,12 @@ function App() {
               <Badge variant="secondary" className="hidden sm:inline-flex">
                 Beta
               </Badge>
+              {activeAlertCount > 0 && (
+                <Badge variant="outline" className="hidden sm:inline-flex border-accent/50 text-accent">
+                  <Bell size={14} weight="fill" className="mr-1 animate-pulse" />
+                  {activeAlertCount} Alert{activeAlertCount > 1 ? 's' : ''} Active
+                </Badge>
+              )}
             </div>
 
             <div className="flex items-center gap-4">

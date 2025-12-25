@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { Token, Alert } from '@/lib/types'
 import { formatPrice } from '@/lib/formatters'
+import { SpeakerHigh } from '@phosphor-icons/react'
+import { playNotificationSound } from '@/lib/audioNotifications'
 
 interface CreateAlertDialogProps {
   token: Token | null
@@ -17,6 +20,7 @@ interface CreateAlertDialogProps {
 export function CreateAlertDialog({ token, open, onOpenChange, onCreateAlert }: CreateAlertDialogProps) {
   const [condition, setCondition] = useState<Alert['condition']>('above')
   const [threshold, setThreshold] = useState('')
+  const [soundEnabled, setSoundEnabled] = useState(true)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,11 +36,17 @@ export function CreateAlertDialog({ token, open, onOpenChange, onCreateAlert }: 
       condition,
       threshold: thresholdNum,
       isActive: true,
+      soundEnabled,
     })
 
     setThreshold('')
     setCondition('above')
+    setSoundEnabled(true)
     onOpenChange(false)
+  }
+
+  const handleTestSound = () => {
+    playNotificationSound('alert')
   }
 
   return (
@@ -87,6 +97,36 @@ export function CreateAlertDialog({ token, open, onOpenChange, onCreateAlert }: 
                 onChange={(e) => setThreshold(e.target.value)}
                 required
               />
+            </div>
+
+            <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-secondary/20">
+              <div className="flex items-center gap-3">
+                <SpeakerHigh size={20} className="text-accent" />
+                <div className="flex flex-col gap-1">
+                  <Label htmlFor="sound-enabled" className="cursor-pointer">
+                    Sound Notification
+                  </Label>
+                  <span className="text-xs text-muted-foreground">
+                    Play sound when alert triggers
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={handleTestSound}
+                  className="h-8"
+                >
+                  Test
+                </Button>
+                <Switch
+                  id="sound-enabled"
+                  checked={soundEnabled}
+                  onCheckedChange={setSoundEnabled}
+                />
+              </div>
             </div>
 
             <div className="flex gap-2 justify-end">
