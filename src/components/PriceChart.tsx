@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
 import { ChartDataPoint, ChartTimeframe } from '@/lib/types'
+import { calculateEMA, detectSupportResistance } from '@/lib/technicalIndicators'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 interface PriceChartProps {
@@ -29,6 +32,8 @@ export function PriceChart({
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [hoveredPoint, setHoveredPoint] = useState<ChartDataPoint | null>(null)
+  const [showEMA, setShowEMA] = useState(false)
+  const [showSupportResistance, setShowSupportResistance] = useState(false)
 
   const maData = useMemo(() => {
     if (!showMA || data.length === 0) return []
@@ -42,6 +47,16 @@ export function PriceChart({
 
     return ma
   }, [data, showMA, maLength])
+
+  const emaData = useMemo(() => {
+    if (!showEMA || data.length === 0) return []
+    return calculateEMA(data, 12)
+  }, [data, showEMA])
+
+  const supportResistanceLevels = useMemo(() => {
+    if (!showSupportResistance || data.length === 0) return []
+    return detectSupportResistance(data, 0.015)
+  }, [data, showSupportResistance])
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -201,6 +216,48 @@ export function PriceChart({
         .attr('d', maLine)
     }
 
+    if (showEMA && emaData.length > 0) {
+      const emaLine = d3
+        .line<{ timestamp: number; value: number }>()
+        .x(d => xScale(new Date(d.timestamp)))
+        .y(d => yPriceScale(d.value))
+        .curve(d3.curveMonotoneX)
+
+      g.append('path')
+        .datum(emaData)
+        .attr('fill', 'none')
+        .attr('stroke', 'oklch(0.75 0.22 60)')
+        .attr('stroke-width', 2)
+        .attr('d', emaLine)
+    }
+
+    if (showSupportResistance && supportResistanceLevels.length > 0) {
+      supportResistanceLevels.forEach((level, index) => {
+        const isSupport = level < data[data.length - 1].price
+        const color = isSupport ? 'oklch(0.65 0.18 150)' : 'oklch(0.60 0.22 25)'
+        
+        g.append('line')
+          .attr('x1', 0)
+          .attr('x2', width)
+          .attr('y1', yPriceScale(level))
+          .attr('y2', yPriceScale(level))
+          .style('stroke', color)
+          .style('stroke-width', 2)
+          .style('stroke-dasharray', '5,5')
+          .style('opacity', 0.6)
+
+        g.append('text')
+          .attr('x', width - 5)
+          .attr('y', yPriceScale(level) - 5)
+          .attr('text-anchor', 'end')
+          .style('fill', color)
+          .style('font-size', '10px')
+          .style('font-family', 'var(--font-mono)')
+          .style('font-weight', '600')
+          .text(`${isSupport ? 'S' : 'R'}: $${level.toFixed(4)}`)
+      })
+    }
+
     if (showVolume) {
       const volumeG = g
         .append('g')
@@ -275,7 +332,7 @@ export function PriceChart({
         focus.attr('transform', `translate(${xScale(new Date(d.timestamp))},${yPriceScale(d.price)})`)
         setHoveredPoint(d)
       })
-  }, [data, dimensions, showVolume, showMA, maData, timeframe])
+  }, [data, dimensions, showVolume, showMA, maData, showEMA, emaData, showSupportResistance, supportResistanceLevels, timeframe])
 
   const firstPrice = data[0]?.price ?? 0
   const lastPrice = data[data.length - 1]?.price ?? 0
@@ -328,6 +385,26 @@ export function PriceChart({
         </div>
       </div>
 
+      <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-ema"
+            checked={showEMA}
+            onCheckedChange={setShowEMA}
+          />
+          <Label htmlFor="show-ema" className="text-sm">EMA(12)</Label>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-sr"
+            checked={showSupportResistance}
+            onCheckedChange={setShowSupportResistance}
+          />
+          <Label htmlFor="show-sr" className="text-sm">Support/Resistance</Label>
+        </div>
+      </div>
+
       <div className="relative bg-card border border-border rounded-lg p-4 glow-border">
         <svg
           ref={svgRef}
@@ -341,6 +418,21 @@ export function PriceChart({
           Volume: ${hoveredPoint.volume.toLocaleString('en-US', { maximumFractionDigits: 0 })}
         </div>
       )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+        {showEMA && (
+          <div className="bg-muted/30 rounded-lg p-3 border border-border">
+            <span className="font-semibold" style={{ color: 'oklch(0.75 0.22 60)' }}>EMA(12)</span>
+            <span className="text-muted-foreground ml-2">Exponential moving average - faster response to price changes</span>
+          </div>
+        )}
+        {showSupportResistance && supportResistanceLevels.length > 0 && (
+          <div className="bg-muted/30 rounded-lg p-3 border border-border">
+            <span className="font-semibold text-accent">S/R Levels</span>
+            <span className="text-muted-foreground ml-2">{supportResistanceLevels.length} key price levels detected</span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

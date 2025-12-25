@@ -34,11 +34,11 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - Success criteria: Alerts persist in useKV, modal form validates input, sound notifications work reliably, alerts display in dedicated tab with trigger history, can toggle on/off and delete, triggered alerts show in history panel, sound test button works
 
 **Advanced Historical Charts**
-- Functionality: Interactive D3-powered charts showing historical price data with multiple timeframes (1H, 24H, 7D, 30D, 90D, 1Y), volume bars, moving averages, and two chart types (line and candlestick)
-- Purpose: Professional-grade technical analysis tools for understanding price trends and patterns
+- Functionality: Interactive D3-powered charts showing historical price data with multiple timeframes (1H, 24H, 7D, 30D, 90D, 1Y), volume bars, moving averages (SMA/EMA), and multiple chart types (line, candlestick, and technical indicators including RSI, MACD, Bollinger Bands, support/resistance levels)
+- Purpose: Professional-grade technical analysis tools for understanding price trends, momentum, volatility, and key price levels
 - Trigger: Navigate to Charts tab or click token details
-- Progression: User selects Charts tab → Selects token from dropdown → Chooses timeframe → Chart renders with smooth animations → Hover shows detailed data → Can toggle volume/MA → Switch between line and candlestick views
-- Success criteria: Charts render smoothly, data updates when timeframe changes, hover interactions work, responsive on mobile
+- Progression: User selects Charts tab → Selects token from dropdown → Chooses timeframe → Chart renders with smooth animations → Hover shows detailed data → Can toggle indicators (volume/MA/EMA/S&R) → Switch between line, candlestick, and indicators views → Analyze RSI for overbought/oversold conditions → Review MACD for trend changes → Examine Bollinger Bands for volatility → Identify support/resistance levels
+- Success criteria: Charts render smoothly, data updates when timeframe changes, hover interactions work, indicators calculate correctly, responsive on mobile
 
 **Role-Based Panels**
 - Functionality: Three distinct interfaces (User Dashboard, Admin Panel, Developer Tools)
@@ -48,11 +48,18 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - Success criteria: Each role shows unique content, admin sees user management, developer sees API tools
 
 **Token Detail View**
-- Functionality: Comprehensive analytics for individual tokens including advanced price charts, metadata, and risk metrics
-- Purpose: Deep-dive analysis for informed decision-making
+- Functionality: Comprehensive analytics for individual tokens including advanced price charts with technical indicators, volume analysis, metadata, and risk metrics
+- Purpose: Deep-dive analysis with professional trading tools for informed decision-making
 - Trigger: Click on token row in scanner
-- Progression: User clicks token → Detail dialog opens → Loads historical data → Renders interactive chart → Shows metrics → User can set alerts or add to watchlist
-- Success criteria: Detail panel displays rich token data, chart renders with all timeframes, back navigation works
+- Progression: User clicks token → Detail dialog opens → Loads historical data → Renders interactive chart with indicators → Shows metrics → User can set alerts or add to watchlist
+- Success criteria: Detail panel displays rich token data, chart renders with all indicators and timeframes, back navigation works
+
+**Volume Profile Analysis**
+- Functionality: Horizontal histogram showing volume traded at each price level, highlighting high-volume nodes and price distribution
+- Purpose: Identify key price levels where most trading activity occurred, which often act as support/resistance
+- Trigger: Navigate to Volume tab in dashboard
+- Progression: User clicks Volume tab → Volume profile chart renders → Shows distribution of volume across price levels → Displays total volume, average volume, max volume, and high-volume bar count → Hover shows detailed volume at each price level
+- Success criteria: Volume profile renders accurately, shows price levels with highest activity, color intensity reflects volume concentration, tooltip displays detailed information
 
 ## Edge Case Handling
 
@@ -67,6 +74,9 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - **Concurrent Updates** - Handle race conditions when multiple tabs modify watchlist/alerts using functional updates
 - **Chart Rendering Issues** - Fallback to simpler bar chart if D3 fails, show loading state during data generation
 - **Empty Chart Data** - Display message when no historical data available for selected timeframe
+- **Indicator Calculation Errors** - Gracefully handle insufficient data for technical indicators (e.g., need 14+ points for RSI)
+- **Volume Profile Binning** - Adjust number of price bins based on data volatility to ensure meaningful distribution
+- **Support/Resistance Detection** - Filter out duplicate levels within threshold to prevent cluttered chart display
 
 ## Design Direction
 
@@ -117,16 +127,18 @@ Animations should feel snappy and purposeful - like data flowing through a high-
 ## Component Selection
 
 - **Components**: 
-  - Tabs: shadcn Tabs for main navigation between All Tokens/Watchlist/Charts/Alerts
+  - Tabs: shadcn Tabs for main navigation between All Tokens/Watchlist/Charts/Volume/Alerts
   - Card: shadcn Card for metric displays and content containers
   - Table: Custom sortable table with hover states and row actions
   - Dialog: shadcn Dialog for alert creation and token details
-  - Badge: shadcn Badge for status indicators (price change %, alert status)
+  - Badge: shadcn Badge for status indicators (price change %, alert status, RSI conditions)
   - Button: shadcn Button with glow effects on primary actions
-  - Switch: shadcn Switch for alert toggles and chart options
+  - Switch: shadcn Switch for alert toggles and chart indicator options
   - Select: shadcn Select for token selection and MA period
-  - Custom PriceChart: D3-powered line chart with area fill, gridlines, and interactive crosshair
+  - Custom PriceChart: D3-powered line chart with area fill, gridlines, interactive crosshair, EMA overlays, and support/resistance levels
   - Custom CandlestickChart: D3-powered OHLC visualization with volume bars
+  - Custom IndicatorChart: Multi-panel chart displaying price with Bollinger Bands, RSI oscillator, and MACD histogram with signal lines
+  - Custom VolumeAnalysis: Horizontal volume profile showing price distribution with color-coded intensity
   - Custom ChartView: Container component with chart type switching and controls
 
 - **Customizations**: 
@@ -146,8 +158,9 @@ Animations should feel snappy and purposeful - like data flowing through a high-
   - Star for watchlist
   - Bell for alerts and active monitoring indicator
   - SpeakerHigh/SpeakerSlash for sound notification toggle
-  - ChartLine for analytics/charts
+  - ChartLine for line charts and analytics
   - ChartLineUp for candlestick charts
+  - ChartBar for volume analysis and indicators
   - User/ShieldCheck/Code for role selection
   - TrendUp/TrendDown for price changes
 

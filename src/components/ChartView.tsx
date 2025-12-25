@@ -7,9 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PriceChart } from '@/components/PriceChart'
 import { CandlestickChart } from '@/components/CandlestickChart'
+import { IndicatorChart } from '@/components/IndicatorChart'
 import { Token, ChartTimeframe, ChartDataPoint } from '@/lib/types'
 import { generateHistoricalData } from '@/lib/mockData'
-import { ChartLine, ChartLineUp } from '@phosphor-icons/react'
+import { ChartLine, ChartLineUp, ChartBar } from '@phosphor-icons/react'
 
 interface ChartViewProps {
   tokens: Token[]
@@ -75,6 +76,10 @@ export function ChartView({ tokens }: ChartViewProps) {
                 <ChartLineUp size={16} />
                 Candlestick
               </TabsTrigger>
+              <TabsTrigger value="indicators" className="flex items-center gap-2">
+                <ChartBar size={16} />
+                Indicators
+              </TabsTrigger>
             </TabsList>
 
             <div className="flex items-center gap-6 flex-wrap">
@@ -131,6 +136,15 @@ export function ChartView({ tokens }: ChartViewProps) {
 
           <TabsContent value="candle" className="mt-0">
             <CandlestickChart
+              data={chartData}
+              timeframe={timeframe}
+              onTimeframeChange={setTimeframe}
+              tokenSymbol={selectedToken?.symbol}
+            />
+          </TabsContent>
+
+          <TabsContent value="indicators" className="mt-0">
+            <IndicatorChart
               data={chartData}
               timeframe={timeframe}
               onTimeframeChange={setTimeframe}

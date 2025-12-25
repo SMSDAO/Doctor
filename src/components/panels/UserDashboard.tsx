@@ -3,11 +3,13 @@ import { TokenTable } from '@/components/TokenTable'
 import { MetricCard } from '@/components/MetricCard'
 import { ChartView } from '@/components/ChartView'
 import { AlertHistory } from '@/components/AlertHistory'
+import { VolumeAnalysis } from '@/components/VolumeAnalysis'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatVolume, formatPercentage, formatPrice, formatTimeAgo } from '@/lib/formatters'
+import { generateHistoricalData } from '@/lib/mockData'
 import { ChartBar, Bell, Star, TrendUp, Lightning, ChartLine, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react'
 import { Switch } from '@/components/ui/switch'
 
@@ -86,7 +88,7 @@ export function UserDashboard({
       )}
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-4">
+        <TabsList className="grid w-full max-w-3xl grid-cols-5">
           <TabsTrigger value="all">
             All Tokens ({tokens.length})
           </TabsTrigger>
@@ -96,6 +98,10 @@ export function UserDashboard({
           <TabsTrigger value="charts">
             <ChartLine size={16} className="mr-1" />
             Charts
+          </TabsTrigger>
+          <TabsTrigger value="volume">
+            <ChartBar size={16} className="mr-1" />
+            Volume
           </TabsTrigger>
           <TabsTrigger value="alerts">
             Alerts ({alerts.length})
@@ -150,6 +156,15 @@ export function UserDashboard({
 
         <TabsContent value="charts" className="space-y-4">
           <ChartView tokens={tokens} />
+        </TabsContent>
+
+        <TabsContent value="volume" className="space-y-4">
+          {tokens.length > 0 && (
+            <VolumeAnalysis
+              data={generateHistoricalData(tokens[0].price, '7D')}
+              tokenSymbol={tokens[0].symbol}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="alerts" className="space-y-4">
