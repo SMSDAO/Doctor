@@ -1,28 +1,22 @@
 /// <reference path="../../vite-end.d.ts" />
-import { useState, useRef, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/s
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { X, Sparkle, User, PaperPlaneRight, GitBranch } from '@phosphor-icons/react'
 import { Repository } from '@/lib/hospitalTypes'
 
-declare const spark: {
-  llmPrompt: (strings: TemplateStringsArray, ...values: any[]) => string
-  llm: (prompt: string, modelName?: string, jsonMode?: boolean) => Promise<string>
-}
-
 interface Message {
-  id: string
+interface Me
   role: 'user' | 'assistant'
   content: string
   repoContext?: string
 }
 
 interface AIChatPanelProps {
-  isOpen: boolean
+}
   onClose: () => void
   repositories: Repository[]
 }
@@ -33,7 +27,7 @@ export default function AIChatPanel({ isOpen, onClose, repositories }: AIChatPan
       id: '1',
       role: 'assistant',
       content: 'Hello! I\'m your AlgoBrainDoctor AI assistant. I can help you analyze repository health, suggest improvements, and answer questions about your codebase metrics.'
-    }
+     
   ])
   const [input, setInput] = useState('')
   const [selectedRepo, setSelectedRepo] = useState<string>('')
@@ -51,13 +45,13 @@ export default function AIChatPanel({ isOpen, onClose, repositories }: AIChatPan
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      role: 'user',
+`
       content: input,
       repoContext: selectedRepo
     }
 
     setMessages(prev => [...prev, userMessage])
-    setInput('')
+
     setIsLoading(true)
 
     try {
@@ -78,9 +72,9 @@ Language: ${currentRepo.language}
       const prompt = spark.llmPrompt`You are AlgoBrainDoctor AI, an expert in repository health monitoring and code quality analysis. 
 
 Context:
-${contextInfo}
+    if (e.key 
 
-Previous conversation:
+    }
 ${conversationHistory}
 
 User question: ${input}
@@ -90,14 +84,14 @@ Provide helpful, concise advice about repository health, code quality, or sugges
       const response = await spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        <div className="flex items-cente
         role: 'assistant',
         content: response,
         repoContext: selectedRepo
       }
 
       setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
+      </div>
       console.error('AI chat error:', error)
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
@@ -105,15 +99,15 @@ Provide helpful, concise advice about repository health, code quality, or sugges
         content: 'Sorry, I encountered an error processing your request. Please try again.'
       }])
     } finally {
-      setIsLoading(false)
+                <SelectIt
     }
-  }
+   
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
+                  </div>
       handleSendMessage()
-    }
+     
   }
 
   const handleAnalyze = () => {
@@ -131,14 +125,14 @@ Provide helpful, concise advice about repository health, code quality, or sugges
         <div className="flex items-center gap-2">
           <Sparkle size={20} weight="fill" className="text-accent" />
           <span className="font-semibold">AI Assistant</span>
-        </div>
+              
         <Button
           variant="ghost"
           size="icon"
-          onClick={onClose}
-        >
+                  message.r
+         
           <X size={20} />
-        </Button>
+                <
       </div>
 
       <div className="p-3 border-b border-border space-y-2">
@@ -165,13 +159,13 @@ Provide helpful, concise advice about repository health, code quality, or sugges
           </Select>
           <Button
             variant="outline"
-            size="sm"
+
             onClick={handleAnalyze}
             disabled={!selectedRepo}
-          >
+
             Analyze
-          </Button>
-        </div>
+
+
         {selectedRepo && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <GitBranch size={12} />
@@ -185,14 +179,14 @@ Provide helpful, concise advice about repository health, code quality, or sugges
       <ScrollArea className="flex-1 p-4">
         <div ref={scrollAreaRef} className="space-y-4">
           {messages.map(message => (
-            <div
+
               key={message.id}
-              className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+
             >
-              {message.role === 'assistant' && (
+
                 <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
                   <Sparkle size={16} weight="fill" className="text-accent" />
-                </div>
+
               )}
               <div
                 className={`px-3 py-2 rounded-lg max-w-[75%] ${
@@ -203,13 +197,13 @@ Provide helpful, concise advice about repository health, code quality, or sugges
               >
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
-              {message.role === 'user' && (
+
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <User size={16} weight="fill" className="text-primary" />
+
                 </div>
-              )}
+
             </div>
-          ))}
+
           {isLoading && (
             <div className="flex gap-3 justify-start">
               <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
@@ -224,7 +218,7 @@ Provide helpful, concise advice about repository health, code quality, or sugges
               </div>
             </div>
           )}
-        </div>
+
       </ScrollArea>
 
       <div className="p-3 border-t border-border flex gap-2">
@@ -244,6 +238,6 @@ Provide helpful, concise advice about repository health, code quality, or sugges
           <PaperPlaneRight size={16} weight="fill" />
         </Button>
       </div>
-    </Card>
+
   )
-}
+
