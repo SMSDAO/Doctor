@@ -1,13 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { X, PaperPlaneRight, Sparkle, User } from '@phosphor-icons/react'
-import { toast } from 'sonner'
+import { X, PaperPlaneRight, Sparkle, User } from '@phos
 
-interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
@@ -46,25 +41,33 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
       role: 'user',
       content: input.trim(),
       timestamp: Date.now()
+  if (!isOpen) retu
+
+      <div className="flex i
     }
 
-    setMessages(prev => [...prev, userMessage])
-    setInput('')
+        <Button
+          varian
     setIsLoading(true)
 
     try {
-      const promptText = `You are Repo-Doctor AI, a helpful assistant that provides insights about repository health, code quality, and development workflows. Respond to this question: ${userMessage.content}`
-      const response = await window.spark.llm(promptText, 'gpt-4o-mini')
+      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
 
-      const assistantMessage: Message = {
+              key={message.id}
+
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+
+              <div
+
+                    : 'bg-card border bor
         id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response,
-        timestamp: Date.now()
+              </div>
+                <div class
+                </div>
       }
 
-      setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
+              <div className="flex-shrink-0 w-8 h-8 ro
+              </div>
       toast.error('Failed to get AI response. Please try again.')
       console.error('AI chat error:', error)
     } finally {
@@ -82,14 +85,6 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
   if (!isOpen) return null
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[600px] z-50 flex flex-col shadow-2xl glow-accent border-accent/20">
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <div className="flex items-center gap-2">
-          <Sparkle size={20} weight="fill" className="text-accent" />
-          <h3 className="font-semibold">Repo-Doctor AI</h3>
-          <Badge variant="secondary" className="text-xs">Beta</Badge>
-        </div>
-        <Button
           size="icon"
           variant="ghost"
           onClick={onClose}
