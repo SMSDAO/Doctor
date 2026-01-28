@@ -351,7 +351,11 @@ function HospitalApp() {
       </div>
 
       {!isChatOpen && <AIChatButton onClick={() => setIsChatOpen(true)} />}
-      <AIChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <AIChatPanel 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)}
+        repositories={repos}
+      />
 
       <Toaster position="top-right" theme="dark" richColors />
     </div>

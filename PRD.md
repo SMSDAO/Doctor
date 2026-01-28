@@ -68,6 +68,13 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - Progression: User clicks Volume tab → Volume profile chart renders → Shows distribution of volume across price levels → Displays total volume, average volume, max volume, and high-volume bar count → Hover shows detailed volume at each price level
 - Success criteria: Volume profile renders accurately, shows price levels with highest activity, color intensity reflects volume concentration, tooltip displays detailed information
 
+**AI-Powered Repository Analysis Chat**
+- Functionality: Interactive chat interface where users can select specific repositories and receive AI-powered analysis, recommendations, and insights about repository health, code quality, and best practices
+- Purpose: Provide personalized, context-aware guidance for improving repository health through conversational AI that understands the specific metrics and context of each repository
+- Trigger: Click floating AI chat button in bottom-right corner
+- Progression: User clicks AI button → Chat panel opens with greeting → User selects repository from dropdown → User can ask questions or click "Analyze" for automatic analysis → AI receives full repository context (health score, metrics, issues, language, etc.) → Provides tailored recommendations → Conversation persists with repository context displayed → User can switch repositories mid-conversation → Chat remembers conversation history
+- Success criteria: Repository selector shows all available repos with health scores, selected repo context is visible in messages, AI responses are relevant to specific repository metrics, analyze button triggers detailed health analysis, conversation flows naturally with context awareness
+
 ## Edge Case Handling
 
 - **No Repositories Available** - Display empty state with helpful message and action to connect GitHub account
@@ -88,6 +95,10 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - **Indicator Calculation Errors** - Gracefully handle insufficient data for technical indicators (e.g., need 14+ points for RSI)
 - **Volume Profile Binning** - Adjust number of price bins based on data volatility to ensure meaningful distribution
 - **Support/Resistance Detection** - Filter out duplicate levels within threshold to prevent cluttered chart display
+- **AI Chat Without Repositories** - Show helpful message and general repository advice when no repos are loaded
+- **AI Response Errors** - Display error toast and graceful fallback message if LLM call fails
+- **Long Chat Conversations** - Auto-scroll to latest message, maintain chat history in state
+- **Repository Context Switching** - Clear indication when user switches repository mid-conversation
 
 ## Design Direction
 
