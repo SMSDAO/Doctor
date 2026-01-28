@@ -1,275 +1,249 @@
+/// <reference path="../../vite-end.d.ts" />
 import { useState, useRef, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, S
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { X, Sparkle, User, PaperPlaneRight, GitBranch } from '@phosphor-icons/react'
+import { Repository } from '@/lib/hospitalTypes'
+
+declare const spark: {
+  llmPrompt: (strings: TemplateStringsArray, ...values: any[]) => string
+  llm: (prompt: string, modelName?: string, jsonMode?: boolean) => Promise<string>
+}
+
+interface Message {
   id: string
+  role: 'user' | 'assistant'
+  content: string
+  repoContext?: string
+}
 
-  status: string
-    commits:
-    testCoverage: 
-  autoHealing?:
-
-  id: string
-  content: st
-  repoContext?: str
-
+interface AIChatPanelProps {
   isOpen: boolean
-  r
+  onClose: () => void
+  repositories: Repository[]
+}
 
- 
-
-      content: 'Hel
+export default function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: 'Hello! I\'m your AlgoBrainDoctor AI assistant. I can help you analyze repository health, suggest improvements, and answer questions about your codebase metrics.'
     }
-  const [input, setInput] = 
-  const [selected
+  ])
+  const [input, setInput] = useState('')
+  const [selectedRepo, setSelectedRepo] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-    if (scrollAreaRef.
- 
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    }
+  }, [messages])
 
+  const handleSendMessage = async () => {
+    if (!input.trim()) return
 
-    if (!input.tr
-    const userMessage
+    const userMessage: Message = {
+      id: Date.now().toString(),
       role: 'user',
- 
+      content: input,
+      repoContext: selectedRepo
+    }
 
+    setMessages(prev => [...prev, userMessage])
     setInput('')
+    setIsLoading(true)
 
-     
-      const co
-Status: ${currentRepo.st
-- Open Issues: ${currentRepo.metrics.openIssues}
-- Auto-Healing: ${currentRe
-     
-    
-      const prompt = spark.llmPrompt`You
+    try {
+      const currentRepo = repositories.find(r => r.id === selectedRepo)
+      const contextInfo = currentRepo
+        ? `
+Repository: ${currentRepo.fullName}
+Health Score: ${currentRepo.healthScore}
+Status: ${currentRepo.status}
+Open Issues: ${currentRepo.openIssues || 0}
+Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
+Language: ${currentRepo.language}
+`
+        : 'No repository selected.'
+
+      const conversationHistory = messages.slice(-5).map(m => `${m.role}: ${m.content}`).join('\n')
+      
+      const prompt = spark.llmPrompt`You are AlgoBrainDoctor AI, an expert in repository health monitoring and code quality analysis. 
+
+Context:
 ${contextInfo}
+
 Previous conversation:
+${conversationHistory}
 
+User question: ${input}
 
+Provide helpful, concise advice about repository health, code quality, or suggest actions. Keep responses under 150 words.`
 
+      const response = await spark.llm(prompt, 'gpt-4o-mini')
 
+      const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-     
-        repoCont
+        role: 'assistant',
+        content: response,
+        repoContext: selectedRepo
+      }
 
+      setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-
+      console.error('AI chat error:', error)
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Sorry, I encountered an error processing your request. Please try again.'
+      }])
+    } finally {
       setIsLoading(false)
+    }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
+      handleSendMessage()
     }
+  }
 
-    const repo = repositorie
+  const handleAnalyze = () => {
+    const repo = repositories.find(r => r.id === selectedRepo)
+    if (!repo) return
 
-    s
+    setInput(`Analyze the health of ${repo.fullName} and suggest improvements`)
+  }
 
-    <Card className="fixed right-4 top-4 bottom-4
-        <div cla
-          <span classN
+  if (!isOpen) return null
 
-         
+  return (
+    <Card className="fixed right-4 top-4 bottom-4 w-96 flex flex-col shadow-2xl z-50 bg-card/95 backdrop-blur-sm glow-border border-primary/20">
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center gap-2">
+          <Sparkle size={20} weight="fill" className="text-accent" />
+          <span className="font-semibold">AI Assistant</span>
         </div>
-      
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
         >
+          <X size={20} />
         </Button>
-
-        <div className="p-3 border-b border-bord
-            <Select value={selectedRepo} onValueChang
-                <SelectValue placeholder="Select repository" />
- 
-                  <SelectItem key={repo.id} v
-
-                      <Badge 
-
-                        {repo.status}
-
-              
-
-              variant=
-              onClick=
-
-            </Button>
-
-              <GitBranch size={12} />
-
-                className="text-xs"
-
-            </div>
-        </div>
-
-        <div className="sp
-            <div
-              className={`flex gap-3 ${mes
-       
-
-              )}
-                <div
-                    message.role === 'user'
-                      : 'b
-               
-                </div>
-     
-   
-
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex
-                </div>
-            </div>
-          {isLoadi
-     
-   
-
-            </div>
-        </div>
-
-
-            value={input}
-            onKeyDown={handleKeyDown}
-   
-
-          
-            size="sm"
-          >
-          </Button>
       </div>
-  )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                      <GitBranch size={14} />
-
-                      <Badge 
-
-
-
-
-
-                    </div>
-
-                ))}
-
-
-
-
-              size="sm"
-
-              disabled={!selectedRepo || isLoading}
-            >
-
-            </Button>
-
-
-
-
-
-              <Badge 
-
-                className="text-xs"
-
-
-
-            </div>
-
+      <div className="p-3 border-b border-border space-y-2">
+        <div className="flex gap-2">
+          <Select value={selectedRepo} onValueChange={setSelectedRepo}>
+            <SelectTrigger className="flex-1">
+              <SelectValue placeholder="Select repository" />
+            </SelectTrigger>
+            <SelectContent>
+              {repositories.map(repo => (
+                <SelectItem key={repo.id} value={repo.id}>
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant={repo.status === 'healthy' ? 'default' : repo.status === 'critical' ? 'destructive' : 'secondary'}
+                      className="text-xs"
+                    >
+                      {repo.status}
+                    </Badge>
+                    {repo.name}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleAnalyze}
+            disabled={!selectedRepo}
+          >
+            Analyze
+          </Button>
         </div>
+        {selectedRepo && (
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <GitBranch size={12} />
+            <span className="truncate">
+              {repositories.find(r => r.id === selectedRepo)?.fullName}
+            </span>
+          </div>
+        )}
+      </div>
 
-
-
-
-
+      <ScrollArea className="flex-1 p-4">
+        <div ref={scrollAreaRef} className="space-y-4">
+          {messages.map(message => (
             <div
-
+              key={message.id}
               className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-
+            >
               {message.role === 'assistant' && (
-
-
-
-              )}
-
-                <div
-
-                    message.role === 'user'
-
-                      : 'bg-muted'
-
-                >
-
+                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                  <Sparkle size={16} weight="fill" className="text-accent" />
                 </div>
-
-
-
-
-
-
-              {message.role === 'user' && (
-
-                  <User size={16} weight="fill" className="text-primary" />
-
               )}
-
+              <div
+                className={`px-3 py-2 rounded-lg max-w-[75%] ${
+                  message.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted'
+                }`}
+              >
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+              </div>
+              {message.role === 'user' && (
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <User size={16} weight="fill" className="text-primary" />
+                </div>
+              )}
+            </div>
           ))}
-
-
-
-
-
-
-
-
-
-
-
+          {isLoading && (
+            <div className="flex gap-3 justify-start">
+              <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                <Sparkle size={16} weight="fill" className="text-accent" />
+              </div>
+              <div className="px-3 py-2 rounded-lg bg-muted">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </ScrollArea>
 
-
-
-          <Input
-            value={input}
-
-
-
-
-            className="flex-1"
-
-          <Button
-
-
-
-
-
-
-
-        </div>
-
+      <div className="p-3 border-t border-border flex gap-2">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Ask about repository health..."
+          className="flex-1"
+          disabled={isLoading}
+        />
+        <Button
+          onClick={handleSendMessage}
+          disabled={!input.trim() || isLoading}
+          size="sm"
+        >
+          <PaperPlaneRight size={16} weight="fill" />
+        </Button>
+      </div>
     </Card>
-
+  )
 }
