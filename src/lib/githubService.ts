@@ -2,10 +2,9 @@ import { Repository } from './hospitalTypes'
 
 export interface GitHubUser {
   login: string
-  id: number
-  avatar_url: string
   name: string
-  email: string
+  avatar_url: string
+  id: number
   public_repos: number
 }
 
@@ -33,27 +32,25 @@ export interface GitHubRepo {
 }
 
 export interface GitHubRepoDetails {
-  open_issues: number
   open_prs: number
-  recent_commits: number
   contributors: number
+  recent_commits: number
+  open_issues: number
   last_commit_date: string
 }
 
 export class GitHubService {
-  private baseUrl = 'https://api.github.com'
-
   async getCurrentUser(): Promise<GitHubUser | null> {
     try {
       const user = await (window as any).spark.user()
-      if (!user || !user.login) return null
-
+      if (!user || !user.login) {
+        return null
+      }
       return {
-        login: user.login,
         id: user.id,
-        avatar_url: user.avatarUrl,
+        login: user.login,
         name: user.login,
-        email: user.email || '',
+        avatar_url: user.avatarUrl,
         public_repos: 0,
       }
     } catch (error) {
@@ -64,32 +61,34 @@ export class GitHubService {
 
   async getUserRepositories(): Promise<GitHubRepo[]> {
     try {
-      const user = await (window as any).spark.user()
-      if (!user || !user.login) return []
+      const user = await this.getCurrentUser()
+      if (!user) {
+        return []
+      }
 
-      const prompt = (window as any).spark.llmPrompt`Generate a list of 15 realistic GitHub repositories for user "${user.login}". 
-      Include a mix of personal projects and work repositories with varied languages (TypeScript, Python, Go, Rust, Java), 
-      different sizes, star counts, and activity levels. Some should be recently active, others older.
+      const prompt = (window as any).spark.llmPrompt`Generate realistic GitHub repositories for user "${user.login}".
+      Include a mix of personal projects and contributions.
+      Return the result as a valid JSON object with a single property called "repos" that contains an array of repository objects.
+      Each repository should have these fields: id, name, full_name, description, language, stargazers_count, forks_count, open_issues_count, size, created_at, updated_at, pushed_at, default_branch.
+      Generate 5-8 repositories with realistic data.
       
-      Return the result as a valid JSON object with a single property called "repositories" that contains the repository list.
-      
-      Return JSON in the following format:
+      Return JSON in this format:
       {
-        "repositories": [
+        "repos": [
           {
-            "id": 123456789,
+            "id": 123456,
             "name": "awesome-project",
             "full_name": "${user.login}/awesome-project",
             "owner": {
               "login": "${user.login}",
-              "avatar_url": "${user.avatarUrl}"
+              "avatar_url": "${user.avatar_url}"
             },
-            "description": "A brief description of the project",
+            "description": "A cool project",
             "private": false,
             "html_url": "https://github.com/${user.login}/awesome-project",
             "created_at": "2023-01-15T10:30:00Z",
-            "updated_at": "2024-02-20T15:45:00Z",
-            "pushed_at": "2024-02-20T15:45:00Z",
+            "updated_at": "2024-01-10T15:45:00Z",
+            "pushed_at": "2024-01-10T15:45:00Z",
             "size": 1024,
             "stargazers_count": 42,
             "watchers_count": 42,
@@ -101,11 +100,11 @@ export class GitHubService {
         ]
       }`
 
-      const response = await (window as any).spark.llm(prompt, 'gpt-4o', true)
+      const response = await (window as any).spark.llm(prompt, 'gpt-4o-mini', true)
       const data = JSON.parse(response)
-      return data.repositories || []
+      return data.repos || []
     } catch (error) {
-      console.error('Failed to fetch repositories:', error)
+      console.error('Failed to get user repositories:', error)
       return []
     }
   }
@@ -113,36 +112,35 @@ export class GitHubService {
   async getRepositoryDetails(owner: string, repo: string): Promise<GitHubRepoDetails> {
     try {
       const prompt = (window as any).spark.llmPrompt`Generate realistic repository health metrics for GitHub repository "${owner}/${repo}".
-      
       Return the result as a valid JSON object with a single property called "details".
       
-      Return JSON in the following format:
+      Return JSON in this format:
       {
         "details": {
-          "open_issues": 5,
-          "open_prs": 2,
-          "recent_commits": 47,
+          "open_prs": 5,
           "contributors": 8,
-          "last_commit_date": "2024-02-20T15:45:00Z"
+          "recent_commits": 25,
+          "open_issues": 3,
+          "last_commit_date": "2024-01-10T15:45:00Z"
         }
       }`
 
       const response = await (window as any).spark.llm(prompt, 'gpt-4o-mini', true)
       const data = JSON.parse(response)
       return data.details || {
-        open_issues: 0,
         open_prs: 0,
-        recent_commits: 0,
         contributors: 1,
+        recent_commits: 0,
+        open_issues: 0,
         last_commit_date: new Date().toISOString(),
       }
     } catch (error) {
-      console.error('Failed to fetch repository details:', error)
+      console.error('Failed to get repository details:', error)
       return {
-        open_issues: 0,
         open_prs: 0,
-        recent_commits: 0,
         contributors: 1,
+        recent_commits: 0,
+        open_issues: 0,
         last_commit_date: new Date().toISOString(),
       }
     }
@@ -151,36 +149,30 @@ export class GitHubService {
   calculateHealthScore(repo: GitHubRepo, details: GitHubRepoDetails): number {
     let score = 100
 
-    const daysSinceUpdate = Math.floor(
-      (Date.now() - new Date(repo.pushed_at).getTime()) / (1000 * 60 * 60 * 24)
-    )
+    const daysSinceUpdate = (Date.now() - new Date(repo.pushed_at).getTime()) / (1000 * 60 * 60 * 24)
     if (daysSinceUpdate > 180) score -= 30
     else if (daysSinceUpdate > 90) score -= 15
     else if (daysSinceUpdate > 30) score -= 5
 
-    const issueRatio = repo.size > 0 ? details.open_issues / (repo.size / 100) : 0
+    const issueRatio = repo.size > 0 ? (repo.open_issues_count / repo.size) * 1000 : 0
     if (issueRatio > 5) score -= 20
     else if (issueRatio > 2) score -= 10
 
-    if (details.recent_commits < 5) score -= 15
-    else if (details.recent_commits < 20) score -= 5
+    if (details.recent_commits < 5) score -= 10
+    else if (details.recent_commits > 20) score += 5
 
-    if (details.contributors < 2) score -= 10
+    if (details.contributors < 2) score -= 5
     else if (details.contributors > 5) score += 5
 
-    if (details.open_prs > 10) score -= 15
-    else if (details.open_prs > 5) score -= 5
+    if (details.open_prs > 10) score -= 10
+    else if (details.open_prs > 20) score -= 20
 
     return Math.max(0, Math.min(100, score))
   }
 
-  async mapToHospitalRepository(
-    repo: GitHubRepo,
-    details: GitHubRepoDetails
-  ): Promise<Repository> {
+  mapToHospitalRepository(repo: GitHubRepo, details: GitHubRepoDetails): Repository {
     const healthScore = this.calculateHealthScore(repo, details)
-    const status =
-      healthScore >= 80 ? 'healthy' : healthScore >= 60 ? 'warning' : 'critical'
+    const status = healthScore >= 80 ? 'healthy' : healthScore >= 60 ? 'warning' : 'critical'
 
     return {
       id: repo.id.toString(),

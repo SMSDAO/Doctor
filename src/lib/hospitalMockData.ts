@@ -242,6 +242,7 @@ export function generateMockJobs(count: number = 15): Job[] {
 
   return Array.from({ length: count }, (_, i) => ({
     id: `job-${i + 1}`,
+    repoId: `repo-${Math.floor(Math.random() * 12) + 1}`,
     type: types[Math.floor(Math.random() * types.length)],
     workerId: Math.random() > 0.3 ? mockWorkers[Math.floor(Math.random() * mockWorkers.length)].id : undefined,
     status: statuses[Math.floor(Math.random() * statuses.length)],
@@ -251,6 +252,7 @@ export function generateMockJobs(count: number = 15): Job[] {
     startedAt: Math.random() > 0.2 ? Date.now() - Math.random() * 1800000 : undefined,
     completedAt: Math.random() > 0.5 ? Date.now() - Math.random() * 900000 : undefined,
     error: Math.random() > 0.8 ? 'Connection timeout' : undefined,
+    retries: Math.floor(Math.random() * 3),
     retryCount: Math.floor(Math.random() * 3),
     maxRetries: 3,
   }))
@@ -273,7 +275,11 @@ export function generateMockScanResults(repoId: string): ScanResult {
 export function generateMockSystemMetrics(): SystemMetrics {
   return {
     timestamp: Date.now(),
+    activeWorkers: Math.floor(Math.random() * 10) + 5,
+    queuedJobs: Math.floor(Math.random() * 50) + 10,
     queueDepth: Math.floor(Math.random() * 150),
+    completedJobs24h: Math.floor(Math.random() * 1000) + 500,
+    failureRate: Math.random() * 5,
     workerUtilization: Math.floor(Math.random() * 30) + 70,
     dbConnections: Math.floor(Math.random() * 40) + 40,
     avgApiLatency: Math.floor(Math.random() * 200) + 200,

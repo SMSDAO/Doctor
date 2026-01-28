@@ -112,7 +112,7 @@ export function AdminPanel({ repos, workers, jobs, identities }: AdminPanelProps
                         </Badge>
                       </TableCell>
                       <TableCell className="data-font">{worker.jobsProcessed.toLocaleString()}</TableCell>
-                      <TableCell className="data-font text-success">{worker.successRate.toFixed(1)}%</TableCell>
+                      <TableCell className="data-font text-success">{worker.successRate?.toFixed(1) ?? 0}%</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                           <Button size="sm" variant="outline" disabled={worker.status === 'running'}>
@@ -167,7 +167,7 @@ export function AdminPanel({ repos, workers, jobs, identities }: AdminPanelProps
                           {identity.type}
                         </Badge>
                       </TableCell>
-                      <TableCell className="data-font">{identity.contributionCount.toLocaleString()}</TableCell>
+                      <TableCell className="data-font">{identity.contributionCount?.toLocaleString() ?? 0}</TableCell>
                       <TableCell className="data-font">{identity.reposClaimed}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {formatDistanceToNow(identity.lastSeen, { addSuffix: true })}
@@ -281,7 +281,7 @@ export function AdminPanel({ repos, workers, jobs, identities }: AdminPanelProps
                         <Badge variant="outline">{repo.language}</Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {formatDistanceToNow(repo.lastScanned, { addSuffix: true })}
+                        {formatDistanceToNow(repo.lastScanned ?? Date.now(), { addSuffix: true })}
                       </TableCell>
                     </TableRow>
                   ))}

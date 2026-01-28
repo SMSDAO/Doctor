@@ -5,13 +5,16 @@ export interface Repository {
   fullName: string
   healthScore: number
   status: 'healthy' | 'warning' | 'critical' | 'scanning'
-  lastScan: number
-  issues: {
+  lastScan?: number
+  lastScanned?: number
+  scoreChange24h?: number
+  url?: string
+  issues?: {
     critical: number
     warning: number
     info: number
   }
-  metrics: {
+  metrics?: {
     commits: number
     contributors: number
     openPRs: number
@@ -19,10 +22,11 @@ export interface Repository {
     codeQuality: number
     testCoverage: number
   }
+  openIssues?: number
   lastCommit: number
-  autoHealing: boolean
+  autoHealing?: boolean
   language: string
-  description: string
+  description?: string
   stars: number
   forks: number
 }
@@ -30,9 +34,11 @@ export interface Repository {
 export interface WorkerStatus {
   id: string
   name: string
-  status: 'running' | 'stopped' | 'error'
+  type?: string
+  status: 'running' | 'stopped' | 'error' | 'idle'
   lastHeartbeat: number
   jobsProcessed: number
+  successRate?: number
   avgProcessingTime: number
   currentJob?: string
 }
@@ -43,7 +49,7 @@ export interface HealdecAction {
   jobId: string
   workerId: string
   errorType: string
-  strategy: 'retry' | 'rollback' | 'escalate' | 'ignore'
+  strategy: 'retry' | 'rollback' | 'escalate' | 'ignore' | 'restart' | 'quarantine'
   outcome: 'success' | 'failed' | 'pending'
   details: string
 }
@@ -51,7 +57,9 @@ export interface HealdecAction {
 export interface Alert {
   id: string
   repoId: string
+  repoName?: string
   type: 'critical' | 'warning' | 'info'
+  severity?: 'critical' | 'warning' | 'info'
   message: string
   createdAt: number
   isActive: boolean
@@ -62,9 +70,11 @@ export interface Identity {
   id: string
   login: string
   email?: string
+  name?: string
   avatarUrl: string
   type: 'user' | 'bot' | 'org'
   reposClaimed: number
+  contributionCount?: number
   lastSeen: number
 }
 
@@ -72,13 +82,16 @@ export interface Job {
   id: string
   repoId: string
   type: string
-  status: 'pending' | 'running' | 'completed' | 'failed'
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'processing' | 'quarantined'
+  priority?: number
+  payload?: any
   createdAt: number
   startedAt?: number
   completedAt?: number
   workerId?: string
   error?: string
   retries: number
+  retryCount?: number
   maxRetries: number
 }
 
@@ -86,10 +99,13 @@ export interface SystemMetrics {
   timestamp: number
   activeWorkers: number
   queuedJobs: number
+  queueDepth?: number
   completedJobs24h: number
   failureRate: number
   workerUtilization: number
   avgApiLatency: number
+  dbConnections?: number
+  healdecActionRate?: number
   totalRepos: number
   criticalRepos: number
   healthyRepos: number
@@ -113,6 +129,18 @@ export interface RepoScanResult {
     outdated: number
     vulnerable: number
   }
+}
+
+export interface ScanResult {
+  id: string
+  repoId: string
+  timestamp: number
+  frameworks?: string[]
+  vulnerabilities?: number
+  dependencies?: number
+  outdatedDeps?: number
+  testCoverage?: number
+  lintIssues?: number
 }
 
 export type UserRole = 'operator' | 'admin' | 'analyst' | 'developer'

@@ -124,7 +124,7 @@ export function OperatorDashboard({
           <CardContent>
             <div className="text-3xl font-bold text-foreground">{healdecActions.length}</div>
             <div className="mt-2 text-xs text-muted-foreground">
-              {systemMetrics.healdecActionRate.toFixed(1)}% action rate
+              {(systemMetrics.healdecActionRate ?? 0).toFixed(1)}% action rate
             </div>
           </CardContent>
         </Card>
@@ -188,10 +188,10 @@ export function OperatorDashboard({
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Clock size={12} />
-                        Scanned {formatDistanceToNow(repo.lastScanned, { addSuffix: true })}
+                        Scanned {formatDistanceToNow(repo.lastScanned ?? Date.now(), { addSuffix: true })}
                       </span>
-                      <span className={repo.scoreChange24h >= 0 ? 'text-success' : 'text-destructive'}>
-                        {repo.scoreChange24h >= 0 ? '+' : ''}{repo.scoreChange24h.toFixed(1)}% 24h
+                      <span className={(repo.scoreChange24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}>
+                        {(repo.scoreChange24h ?? 0) >= 0 ? '+' : ''}{(repo.scoreChange24h ?? 0).toFixed(1)}% 24h
                       </span>
                     </div>
                   </div>
@@ -268,7 +268,7 @@ export function OperatorDashboard({
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Success Rate</span>
-                      <span className="data-font text-success">{worker.successRate.toFixed(1)}%</span>
+                      <span className="data-font text-success">{(worker.successRate ?? 0).toFixed(1)}%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Avg Processing Time</span>

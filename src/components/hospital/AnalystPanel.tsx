@@ -11,7 +11,7 @@ interface AnalystPanelProps {
 
 export function AnalystPanel({ repos, healdecActions, systemMetrics }: AnalystPanelProps) {
   const avgHealthScore = repos.reduce((acc, r) => acc + r.healthScore, 0) / repos.length
-  const healthTrend = repos.reduce((acc, r) => acc + r.scoreChange24h, 0) / repos.length
+  const healthTrend = repos.reduce((acc, r) => acc + (r.scoreChange24h ?? 0), 0) / repos.length
   const successfulActions = healdecActions.filter(a => a.outcome === 'success').length
   const actionSuccessRate = (successfulActions / healdecActions.length) * 100
 
@@ -174,7 +174,7 @@ export function AnalystPanel({ repos, healdecActions, systemMetrics }: AnalystPa
 
             <div className="p-4 border border-border rounded-lg glow-border">
               <div className="text-sm text-muted-foreground mb-1">Healdec Action Rate</div>
-              <div className="text-2xl font-bold data-font">{systemMetrics.healdecActionRate.toFixed(2)}%</div>
+              <div className="text-2xl font-bold data-font">{(systemMetrics.healdecActionRate ?? 0).toFixed(2)}%</div>
               <div className="mt-2 text-xs text-muted-foreground">Target: {'<'}5%</div>
             </div>
 
