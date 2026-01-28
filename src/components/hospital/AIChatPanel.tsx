@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/butto
+import { Badge } from '@/components/ui/badge'
+import { X, PaperPlaneRight, Sparkle, User 
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { X, PaperPlaneRight, Sparkle, User } from '@phosphor-icons/react'
@@ -16,60 +16,60 @@ interface Message {
 
 interface AIChatPanelProps {
   isOpen: boolean
-  onClose: () => void
-}
+  const scrollAreaRef
+ 
 
-export function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Hello! I\'m the Repo-Doctor AI assistant. I can help you with repository diagnostics, health checks, MERMEDA protocol questions, and Healdec strategies. How can I assist you today?',
-      timestamp: Date.now(),
-    },
-  ])
-  const [input, setInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
   }, [messages])
-
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: Date.now(),
+      id: Date
+      content: input.tri
+    }
+    setMessages(prev => [...
+    se
+    
+
+
+
+
+        id: (Date.n
+        content: response,
+      }
+     
+      toast.erro
+
     }
 
-    setMessages(prev => [...prev, userMessage])
-    setInput('')
+
+      handleSend()
+      id: Date.now().toString(),
+  if (!isOpen) retu
+  return (
+      <div className="flex i
+    }
+
+        <Button
+          varian
     setIsLoading(true)
 
     try {
-      const prompt = spark.llmPrompt`You are the Repo-Doctor AI assistant, an expert in repository health, MERMEDA protocol, Healdec auto-healing strategies, and GitOps best practices.
+      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
 
-User question: ${userMessage.content}
+              key={message.id}
 
-Provide a helpful, concise response focused on repository diagnostics, health monitoring, and auto-healing strategies.`
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
 
-      const response = await spark.llm(prompt, 'gpt-4o-mini')
+              <div
 
-      const assistantMessage: Message = {
+                    : 'bg-card border bor
         id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response,
-        timestamp: Date.now(),
+              </div>
+                <div class
+                </div>
       }
 
-      setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
+              <div className="flex-shrink-0 w-8 h-8 ro
+              </div>
       toast.error('Failed to get AI response. Please try again.')
       console.error('AI chat error:', error)
     } finally {
@@ -114,8 +114,8 @@ Provide a helpful, concise response focused on repository diagnostics, health mo
               {message.role === 'assistant' && (
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
                   <Sparkle size={16} weight="fill" className="text-accent" />
-                </div>
-              )}
+
+
               <div
                 className={`max-w-[75%] rounded-lg p-3 ${
                   message.role === 'user'
@@ -128,9 +128,9 @@ Provide a helpful, concise response focused on repository diagnostics, health mo
               {message.role === 'user' && (
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                   <User size={16} weight="fill" className="text-primary" />
-                </div>
-              )}
-            </div>
+
+
+
           ))}
           {isLoading && (
             <div className="flex gap-3 justify-start">
@@ -169,5 +169,5 @@ Provide a helpful, concise response focused on repository diagnostics, health mo
         </div>
       </div>
     </Card>
-  )
+
 }
