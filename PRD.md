@@ -1,6 +1,6 @@
 # Planning Guide
 
-Jupiter Scan is a sophisticated Solana token monitoring platform with advanced charting, real-time price tracking, and intelligent alert management.
+AlgoBrainDoctor Hospital V4 is a production-ready repository health monitoring and auto-healing platform with real-time scoring, identity tracking, and autonomous recovery.
 
 **Experience Qualities**: 
 1. **Precise** - Data-dense interfaces with accurate metrics and clear visual hierarchies that help users make informed trading decisions
