@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { X, PaperPlaneRight, Sparkle, User } from '@phosphor-icons/react'
+import { X, Sparkle, User, PaperPlaneRight } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 declare const spark: {
@@ -28,7 +28,7 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
     {
       id: '1',
       role: 'assistant',
-      content: 'Hello! I\'m your Repository Health Assistant. Ask me anything about code quality, repository health, or best practices.',
+      content: 'Hello! I\'m Repo-Doctor AI. I can help you analyze repository health, suggest improvements, and answer questions about your codebase. How can I assist you today?',
       timestamp: Date.now()
     }
   ])
@@ -45,7 +45,7 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
   if (!isOpen) return null
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return
+    if (!input.trim()) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -53,14 +53,22 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
       content: input.trim(),
       timestamp: Date.now()
     }
-    
+
     setMessages((prev) => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
 
     try {
-      const prompt = spark.llmPrompt`You are a helpful repository health assistant. Answer this question about repository health and code quality: ${userMessage.content}`
-      const response = await spark.llm(prompt)
+      const prompt = spark.llmPrompt`You are Repo-Doctor AI, an expert in repository health monitoring and code analysis. 
+      
+Previous conversation:
+${messages.map(m => `${m.role}: ${m.content}`).join('\n')}
+
+User: ${userMessage.content}
+
+Provide a helpful, concise response about repository health, code quality, or development best practices.`
+
+      const response = await spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
