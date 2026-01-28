@@ -13,12 +13,19 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 
 ## Essential Features
 
-**Token Price Scanner**
-- Functionality: Displays real-time token prices, 24h changes, volume, and market cap with live updates
-- Purpose: Core feature providing instant market visibility for Solana ecosystem tokens
-- Trigger: Automatic on app load, with configurable refresh intervals
-- Progression: User loads app → Token scanner fetches data → Price table renders → Auto-refresh every 30s → User can manually refresh
-- Success criteria: Tokens load correctly, prices update smoothly, sorting works, data persists across sessions
+**GitHub OAuth Integration**
+- Functionality: Authenticate users with GitHub to access their real repositories for scanning and health monitoring
+- Purpose: Enable the platform to scan actual GitHub repositories instead of mock data, providing personalized repository health insights
+- Trigger: User clicks "Connect GitHub" button if not authenticated, or sees connected status
+- Progression: User clicks Connect → GitHub OAuth flow opens → User grants permissions → OAuth callback → Token stored securely → Real repositories fetched → Dashboard populates with actual repo data
+- Success criteria: OAuth flow completes successfully, user info displays, repositories are fetched from GitHub API, persists across sessions
+
+**Real Repository Scanner**
+- Functionality: Fetches and displays real GitHub repositories with health scores calculated from actual metrics (issues, PRs, commits, contributors)
+- Purpose: Provides actionable insights on actual user repositories rather than simulated data
+- Trigger: Automatic after GitHub authentication, with manual refresh option
+- Progression: User authenticates → Repositories fetched via GitHub API → Health scores calculated from real metrics → Repository list populates → Auto-refresh every 5 minutes → User can manually refresh
+- Success criteria: Real repos load correctly, health scores reflect actual repository state, sorting works, data persists across sessions
 
 **Watchlist Management**
 - Functionality: Users can star tokens to add them to a personal watchlist for quick access
@@ -63,8 +70,12 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 
 ## Edge Case Handling
 
-- **No Tokens Available** - Display empty state with helpful message and action to refresh or check connection
+- **No Repositories Available** - Display empty state with helpful message and action to connect GitHub account
+- **OAuth Flow Interruption** - Handle user canceling OAuth, show message to retry authentication
+- **Expired Access Token** - Detect 401 errors and prompt user to re-authenticate
+- **GitHub API Rate Limiting** - Display rate limit status, show time until reset, gracefully degrade to cached data
 - **Network Errors** - Show error toast, retry button, and graceful degradation to last known data
+- **No GitHub Connection** - Show prominent call-to-action to connect GitHub before scanning repositories
 - **Invalid Alert Configuration** - Form validation prevents saving alerts with missing/invalid threshold values
 - **Alert Sound Failure** - Gracefully degrade to visual-only notifications if Web Audio API is unavailable
 - **Multiple Simultaneous Alerts** - Queue sound notifications to prevent audio overlap, show combined toast

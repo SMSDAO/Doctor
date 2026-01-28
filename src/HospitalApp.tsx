@@ -24,10 +24,12 @@ import { OperatorDashboard } from '@/components/hospital/OperatorDashboard'
 import { AdminPanel } from '@/components/hospital/AdminPanel'
 import { AnalystPanel } from '@/components/hospital/AnalystPanel'
 import { DeveloperPanel } from '@/components/hospital/DeveloperPanel'
+import { GitHubConnect } from '@/components/hospital/GitHubConnect'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Pulse, User, ShieldCheck, Code, ChartLine, CheckCircle } from '@phosphor-icons/react'
+import { Pulse, User, ShieldCheck, Code, ChartLine, CheckCircle, GithubLogo } from '@phosphor-icons/react'
+import { githubService } from '@/lib/githubService'
 
 function HospitalApp() {
   const [repos, setRepos] = useState<Repository[]>([])
@@ -40,11 +42,15 @@ function HospitalApp() {
   const [watchlist, setWatchlist] = useKV<string[]>('hospital-watchlist', [])
   const [alerts, setAlerts] = useKV<Alert[]>('hospital-alerts', [])
   const [userRole, setUserRole] = useKV<UserRole>('hospital-user-role', 'operator')
+  const [githubUser, setGithubUser] = useKV<any>('hospital-github-user', null)
+  const [useRealRepos, setUseRealRepos] = useKV<boolean>('hospital-use-real-repos', false)
   
   const [isScanning, setIsScanning] = useState(false)
+  const [isLoadingGithub, setIsLoadingGithub] = useState(false)
 
   const safeWatchlist = watchlist ?? []
   const safeAlerts = alerts ?? []
+  const isGithubConnected = githubUser !== null
 
   useEffect(() => {
     setRepos(generateMockRepositories())
@@ -70,14 +76,56 @@ function HospitalApp() {
     return () => clearInterval(interval)
   }, [])
 
-  const handleScan = () => {
+  const handleScan = async () => {
     setIsScanning(true)
-    setRepos(prev => updateRepositoryScores(prev))
+    
+    if (useRealRepos && isGithubConnected) {
+      try {
+        const realRepos = await githubService.fetchAndMapRepositories()
+        setRepos(realRepos)
+        toast.success(`Scanned ${realRepos.length} real repositories from GitHub`)
+      } catch (error) {
+        console.error('Failed to scan GitHub repos:', error)
+        toast.error('Failed to fetch GitHub repositories')
+        setRepos(prev => updateRepositoryScores(prev))
+      }
+    } else {
+      setRepos(prev => updateRepositoryScores(prev))
+      toast.success('Repository scan completed')
+    }
     
     setTimeout(() => {
       setIsScanning(false)
-      toast.success('Repository scan completed')
     }, 1500)
+  }
+
+  const handleGithubUserChange = (user: any) => {
+    setGithubUser(user)
+    if (user && useRealRepos) {
+      handleScan()
+    }
+  }
+
+  const handleToggleRealRepos = async () => {
+    const newValue = !useRealRepos
+    setUseRealRepos(newValue)
+    
+    if (newValue && isGithubConnected) {
+      setIsLoadingGithub(true)
+      try {
+        const realRepos = await githubService.fetchAndMapRepositories()
+        setRepos(realRepos)
+        toast.success(`Loaded ${realRepos.length} repositories from GitHub`)
+      } catch (error) {
+        console.error('Failed to load GitHub repos:', error)
+        toast.error('Failed to load GitHub repositories')
+      } finally {
+        setIsLoadingGithub(false)
+      }
+    } else if (!newValue) {
+      setRepos(generateMockRepositories())
+      toast.success('Switched to demo data')
+    }
   }
 
   const handleToggleWatchlist = (repoId: string) => {
@@ -189,6 +237,19 @@ function HospitalApp() {
                   {runningWorkers}/12 Workers
                 </div>
 
+                {isGithubConnected && (
+                  <Button
+                    variant={useRealRepos ? "default" : "outline"}
+                    size="sm"
+                    onClick={handleToggleRealRepos}
+                    disabled={isLoadingGithub}
+                    className={useRealRepos ? "glow-accent" : ""}
+                  >
+                    <GithubLogo size={16} weight="fill" />
+                    {isLoadingGithub ? 'Loading...' : useRealRepos ? 'GitHub Data' : 'Demo Data'}
+                  </Button>
+                )}
+
                 <Button
                   variant="outline"
                   size="sm"
@@ -237,6 +298,10 @@ function HospitalApp() {
         </header>
 
         <main className="container mx-auto px-4 lg:px-6 py-8">
+          <div className="mb-6">
+            <GitHubConnect onUserChange={handleGithubUserChange} />
+          </div>
+
           {userRole === 'operator' && (
             <OperatorDashboard
               repos={repos}
