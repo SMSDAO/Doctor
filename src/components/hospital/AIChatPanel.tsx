@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/ui/butto
+import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { X, PaperPlaneRight, Sparkle, User 
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { X, PaperPlaneRight, Sparkle, User } from '@phosphor-icons/react'
 import { toast } from 'sonner'
@@ -16,60 +16,55 @@ interface Message {
 
 interface AIChatPanelProps {
   isOpen: boolean
-  const scrollAreaRef
- 
+  onClose: () => void
+}
 
+export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: 'Hello! I\'m Repo-Doctor AI. Ask me anything about your repository health, code quality, or development workflow.',
+      timestamp: Date.now()
+    }
+  ])
+  const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    }
   }, [messages])
+
   const handleSend = async () => {
+    if (!input.trim()) return
 
-      id: Date
-      content: input.tri
-    }
-    setMessages(prev => [...
-    se
-    
-
-
-
-
-        id: (Date.n
-        content: response,
-      }
-     
-      toast.erro
-
-    }
-
-
-      handleSend()
+    const userMessage: Message = {
       id: Date.now().toString(),
-  if (!isOpen) retu
-  return (
-      <div className="flex i
+      role: 'user',
+      content: input.trim(),
+      timestamp: Date.now()
     }
 
-        <Button
-          varian
+    setMessages(prev => [...prev, userMessage])
+    setInput('')
     setIsLoading(true)
 
     try {
-      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+      const promptText = `You are Repo-Doctor AI, a helpful assistant that provides insights about repository health, code quality, and development workflows. Respond to this question: ${userMessage.content}`
+      const response = await window.spark.llm(promptText, 'gpt-4o-mini')
 
-              key={message.id}
-
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
-
-              <div
-
-                    : 'bg-card border bor
+      const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-              </div>
-                <div class
-                </div>
+        role: 'assistant',
+        content: response,
+        timestamp: Date.now()
       }
 
-              <div className="flex-shrink-0 w-8 h-8 ro
-              </div>
+      setMessages(prev => [...prev, assistantMessage])
+    } catch (error) {
       toast.error('Failed to get AI response. Please try again.')
       console.error('AI chat error:', error)
     } finally {
@@ -114,8 +109,8 @@ interface AIChatPanelProps {
               {message.role === 'assistant' && (
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
                   <Sparkle size={16} weight="fill" className="text-accent" />
-
-
+                </div>
+              )}
               <div
                 className={`max-w-[75%] rounded-lg p-3 ${
                   message.role === 'user'
@@ -128,9 +123,9 @@ interface AIChatPanelProps {
               {message.role === 'user' && (
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                   <User size={16} weight="fill" className="text-primary" />
-
-
-
+                </div>
+              )}
+            </div>
           ))}
           {isLoading && (
             <div className="flex gap-3 justify-start">
@@ -169,5 +164,5 @@ interface AIChatPanelProps {
         </div>
       </div>
     </Card>
-
+  )
 }
