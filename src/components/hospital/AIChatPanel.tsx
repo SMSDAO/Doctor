@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { X, PaperPlaneRight, Sparkle, User } from '@phos
+import { Card } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { X, PaperPlaneRight, Sparkle, User } from '@phosphor-icons/react'
+import { toast } from 'sonner'
 
+interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
@@ -41,33 +45,25 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
       role: 'user',
       content: input.trim(),
       timestamp: Date.now()
-  if (!isOpen) retu
-
-      <div className="flex i
     }
 
-        <Button
-          varian
+    setMessages((prev) => [...prev, userMessage])
+    setInput('')
     setIsLoading(true)
 
     try {
-      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+      const prompt = spark.llmPrompt`You are a helpful repository health assistant. Answer this question about repository health and code quality: ${userMessage.content}`
+      const response = await spark.llm(prompt)
 
-              key={message.id}
-
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
-
-              <div
-
-                    : 'bg-card border bor
+      const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-              </div>
-                <div class
-                </div>
+        role: 'assistant',
+        content: response,
+        timestamp: Date.now()
       }
 
-              <div className="flex-shrink-0 w-8 h-8 ro
-              </div>
+      setMessages((prev) => [...prev, assistantMessage])
+    } catch (error) {
       toast.error('Failed to get AI response. Please try again.')
       console.error('AI chat error:', error)
     } finally {
@@ -85,6 +81,13 @@ export default function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
   if (!isOpen) return null
 
   return (
+    <Card className="fixed bottom-4 right-4 w-96 h-[600px] flex flex-col shadow-2xl z-50">
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center gap-2">
+          <Sparkle size={20} weight="fill" className="text-accent" />
+          <h3 className="font-semibold">Repo-Doctor AI</h3>
+        </div>
+        <Button
           size="icon"
           variant="ghost"
           onClick={onClose}
