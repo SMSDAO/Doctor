@@ -25,6 +25,8 @@ import { AdminPanel } from '@/components/hospital/AdminPanel'
 import { AnalystPanel } from '@/components/hospital/AnalystPanel'
 import { DeveloperPanel } from '@/components/hospital/DeveloperPanel'
 import { GitHubConnect } from '@/components/hospital/GitHubConnect'
+import { AIChatPanel } from '@/components/hospital/AIChatPanel'
+import { AIChatButton } from '@/components/hospital/AIChatButton'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -47,6 +49,7 @@ function HospitalApp() {
   
   const [isScanning, setIsScanning] = useState(false)
   const [isLoadingGithub, setIsLoadingGithub] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   const safeWatchlist = watchlist ?? []
   const safeAlerts = alerts ?? []
@@ -346,6 +349,9 @@ function HospitalApp() {
           )}
         </main>
       </div>
+
+      {!isChatOpen && <AIChatButton onClick={() => setIsChatOpen(true)} />}
+      <AIChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
 
       <Toaster position="top-right" theme="dark" richColors />
     </div>
