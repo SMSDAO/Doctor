@@ -32,97 +32,97 @@ export interface Identity {
   id: string
   login: string
   email?: string
-  name?: string
-  avatarUrl: string
-  type: 'user' | 'bot' | 'organization'
-  contributionCount: number
-  reposClaimed: number
-  lastSeen: number
+  type: 'user' 
+  reposClaimed: num
 }
-
-export interface IdentityClaim {
-  id: string
+export interface IdentityCl
   identityId: string
-  repoId: string
-  role: 'owner' | 'maintainer' | 'contributor' | 'viewer'
-  contributionPercent: number
-  claimedAt: number
-  verifiedAt?: number
-}
+  role: 'owner' | 
+ 
 
 export interface WorkerStatus {
-  id: string
-  name: string
-  type: 'indexer' | 'identity' | 'scorer' | 'ingest' | 'sync' | 'gc' | 'alert' | 'export' | 'audit' | 'repair' | 'backfill' | 'maintenance'
-  status: 'running' | 'idle' | 'error' | 'stopped'
-  lastHeartbeat: number
-  jobsProcessed: number
-  successRate: number
+  name: stri
+  status: 'running' 
+  jobsProcessed:
   avgProcessingTime: number
-  currentJob?: string
 }
-
-export interface Job {
-  id: string
+export interface Jo
   type: string
-  workerId?: string
-  status: 'pending' | 'processing' | 'completed' | 'failed' | 'quarantined'
-  priority: number
-  payload: any
-  createdAt: number
+ 
+
   startedAt?: number
-  completedAt?: number
-  error?: string
-  retryCount: number
-  maxRetries: number
-}
+  error?: st
+  maxRetries: 
 
-export interface HealdecAction {
   id: string
-  timestamp: number
   jobId: string
-  workerId: string
   errorType: string
-  strategy: 'retry' | 'restart' | 'quarantine' | 'rollback' | 'escalate'
-  outcome: 'success' | 'failed' | 'pending'
-  details: string
+  outcome: 'success' 
 }
+export interface Aler
+ 
 
-export interface Alert {
-  id: string
-  repoId: string
-  repoName: string
-  severity: 'info' | 'warning' | 'critical'
-  type: 'health_drop' | 'security_issue' | 'activity_spike' | 'worker_failure'
   message: string
-  isActive: boolean
-  createdAt: number
-  triggeredAt?: number
-  resolvedAt?: number
-}
+  createdAt:
+  resolvedAt?:
 
-export type UserRole = 'operator' | 'admin' | 'analyst' | 'developer' | 'validator'
 
-export interface SystemMetrics {
-  timestamp: number
-  queueDepth: number
-  workerUtilization: number
-  dbConnections: number
-  avgApiLatency: number
-  healdecActionRate: number
+  timestamp: numbe
+  workerUtiliz
+  avgApiLatency: nu
   totalRepos: number
-  healthyRepos: number
-  criticalRepos: number
-}
+  criticalRepos: numbe
 
-export interface ScanResult {
   id: string
-  repoId: string
   timestamp: number
-  frameworks: string[]
-  vulnerabilities: number
-  dependencies: number
-  outdatedDeps: number
-  testCoverage?: number
+ 
+
   lintIssues?: number
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
