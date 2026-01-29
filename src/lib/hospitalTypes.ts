@@ -29,6 +29,42 @@ export interface Repository {
   description?: string
   stars: number
   forks: number
+  admonitions?: AdmonitionScan
+  prSuggestions?: PRSuggestion[]
+}
+
+export interface AdmonitionScan {
+  timestamp: number
+  totalCount: number
+  byType: {
+    TODO: number
+    FIXME: number
+    HACK: number
+    WARNING: number
+    NOTE: number
+    OPTIMIZE: number
+  }
+  items: AdmonitionItem[]
+}
+
+export interface AdmonitionItem {
+  type: 'TODO' | 'FIXME' | 'HACK' | 'WARNING' | 'NOTE' | 'OPTIMIZE'
+  message: string
+  file: string
+  line: number
+  author?: string
+}
+
+export interface PRSuggestion {
+  id: string
+  title: string
+  description: string
+  priority: 'high' | 'medium' | 'low'
+  category: 'bug-fix' | 'feature' | 'refactor' | 'documentation' | 'testing' | 'performance'
+  effort: 'small' | 'medium' | 'large'
+  impact: 'high' | 'medium' | 'low'
+  files: string[]
+  createdAt: number
 }
 
 export interface WorkerStatus {

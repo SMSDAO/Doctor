@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Repository, WorkerStatus, HealdecAction, Job, Alert, SystemMetrics } from '@/lib/hospitalTypes'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -17,7 +18,20 @@ import {
   Pulse,
   Database,
   Clock,
+  Sparkle,
+  Bug,
+  GitPullRequest,
 } from '@phosphor-icons/react'
+import { AdmonitionsPanel } from './AdmonitionsPanel'
+import { PRSuggestionsPanel } from './PRSuggestionsPanel'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 interface OperatorDashboardProps {
   repos: Repository[]
@@ -33,6 +47,7 @@ interface OperatorDashboardProps {
   onDeleteAlert: (alertId: string) => void
   onTriggerWorker: (workerId: string, action: string) => void
   onHealdecAction: (jobId: string, strategy: HealdecAction['strategy']) => void
+  onAnalyzeRepo: (repoId: string) => Promise<void>
 }
 
 export function OperatorDashboard({
@@ -44,7 +59,9 @@ export function OperatorDashboard({
   watchlist,
   alerts,
   onToggleWatchlist,
+  onAnalyzeRepo,
 }: OperatorDashboardProps) {
+  const [selectedRepoForAnalysis, setSelectedRepoForAnalysis] = useState<Repository | null>(null)
   const healthyRepos = repos.filter(r => r.status === 'healthy').length
   const warningRepos = repos.filter(r => r.status === 'warning').length
   const criticalRepos = repos.filter(r => r.status === 'critical').length
@@ -193,6 +210,55 @@ export function OperatorDashboard({
                       <span className={(repo.scoreChange24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}>
                         {(repo.scoreChange24h ?? 0) >= 0 ? '+' : ''}{(repo.scoreChange24h ?? 0).toFixed(1)}% 24h
                       </span>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => {
+                              if (!repo.admonitions || !repo.prSuggestions) {
+                                onAnalyzeRepo(repo.id)
+                              }
+                              setSelectedRepoForAnalysis(repo)
+                            }}
+                          >
+                            <Sparkle size={16} className="mr-1" />
+                            {repo.admonitions && repo.prSuggestions ? 'View Analysis' : 'Analyze'}
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle className="flex items-center gap-2">
+                              <GitBranch size={20} />
+                              {repo.fullName}
+                            </DialogTitle>
+                            <DialogDescription>
+                              Repository analysis and improvement suggestions
+                            </DialogDescription>
+                          </DialogHeader>
+                          <Tabs defaultValue="admonitions" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2">
+                              <TabsTrigger value="admonitions" className="flex items-center gap-2">
+                                <Bug size={16} />
+                                Admonitions
+                              </TabsTrigger>
+                              <TabsTrigger value="pr-suggestions" className="flex items-center gap-2">
+                                <GitPullRequest size={16} />
+                                PR Suggestions
+                              </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="admonitions">
+                              <AdmonitionsPanel scan={repo.admonitions} repoName={repo.name} />
+                            </TabsContent>
+                            <TabsContent value="pr-suggestions">
+                              <PRSuggestionsPanel suggestions={repo.prSuggestions} repoName={repo.name} />
+                            </TabsContent>
+                          </Tabs>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </div>
                 </CardContent>

@@ -27,6 +27,20 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - Progression: User authenticates → Repositories fetched via GitHub API → Health scores calculated from real metrics → Repository list populates → Auto-refresh every 5 minutes → User can manually refresh
 - Success criteria: Real repos load correctly, health scores reflect actual repository state, sorting works, data persists across sessions
 
+**Repository Admonition Scanner**
+- Functionality: AI-powered scanner that analyzes code repositories to find and categorize code comment markers (TODO, FIXME, HACK, WARNING, NOTE, OPTIMIZE) with file locations and context
+- Purpose: Provides visibility into technical debt, unfinished work, and code quality issues marked by developers in comments
+- Trigger: Click "Analyze" button on any repository card
+- Progression: User clicks Analyze → AI scans repository for admonition markers → Results categorized by type → Display summary counts → Show detailed list with file paths and line numbers → Filter by marker type → Sort by priority (FIXME highest, NOTE lowest)
+- Success criteria: Admonitions are accurately detected, categorized correctly, display file locations, can filter by type, shows author when available
+
+**AI-Powered PR Suggestion Generator**
+- Functionality: Generates actionable Pull Request suggestions based on repository health metrics, including title, description, priority, category, effort estimate, impact assessment, and affected files
+- Purpose: Provides concrete, prioritized recommendations for improving repository health through specific code changes
+- Trigger: Click "Analyze" button on repository card, view in PR Suggestions tab
+- Progression: User initiates analysis → AI analyzes repo health metrics → Generates 4-7 targeted PR suggestions → Categorizes by type (bug-fix, feature, refactor, documentation, testing, performance) → Assigns priority and effort → Lists affected files → Displays in priority order → User can review suggestions → Optional "Create Draft PR" action
+- Success criteria: Suggestions are relevant to repository status, properly prioritized, include realistic effort estimates, show impacted files, sorted by priority/impact score
+
 **Watchlist Management**
 - Functionality: Users can star tokens to add them to a personal watchlist for quick access
 - Purpose: Allows traders to track specific tokens of interest without scanning the entire market
@@ -99,6 +113,12 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 - **AI Response Errors** - Display error toast and graceful fallback message if LLM call fails
 - **Long Chat Conversations** - Auto-scroll to latest message, maintain chat history in state
 - **Repository Context Switching** - Clear indication when user switches repository mid-conversation
+- **Admonition Scan Failures** - Display error message if scan fails, allow retry, gracefully handle empty results
+- **No Admonitions Found** - Show friendly empty state when repository has no code markers
+- **PR Suggestion Generation Errors** - Show error toast if AI fails to generate suggestions, allow retry
+- **Empty PR Suggestions** - Handle case where AI generates no suggestions for very healthy repos
+- **Analysis in Progress** - Show loading state during analysis, prevent duplicate analysis requests
+- **Large Admonition Lists** - Implement scrolling and filtering for repos with 100+ markers
 
 ## Design Direction
 

@@ -32,6 +32,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Pulse, User, ShieldCheck, Code, ChartLine, CheckCircle, GithubLogo } from '@phosphor-icons/react'
 import { githubService } from '@/lib/githubService'
+import { repoAnalysisService } from '@/lib/repoAnalysisService'
 
 function HospitalApp() {
   const [repos, setRepos] = useState<Repository[]>([])
@@ -195,6 +196,28 @@ function HospitalApp() {
     toast.success(`Healdec ${strategy} action initiated`)
   }
 
+  const handleAnalyzeRepo = async (repoId: string) => {
+    const repo = repos.find(r => r.id === repoId)
+    if (!repo) return
+
+    toast.loading(`Analyzing ${repo.name}...`, { id: `analyze-${repoId}` })
+
+    try {
+      const { admonitions, prSuggestions } = await repoAnalysisService.analyzeRepository(repo)
+      
+      setRepos(prev => prev.map(r => 
+        r.id === repoId 
+          ? { ...r, admonitions, prSuggestions } 
+          : r
+      ))
+
+      toast.success(`Analysis complete for ${repo.name}`, { id: `analyze-${repoId}` })
+    } catch (error) {
+      console.error('Failed to analyze repository:', error)
+      toast.error(`Failed to analyze ${repo.name}`, { id: `analyze-${repoId}` })
+    }
+  }
+
   const watchlistSet = new Set(safeWatchlist)
   const activeAlertCount = safeAlerts.filter(a => a.isActive).length
   const criticalRepoCount = repos.filter(r => r.status === 'critical').length
@@ -320,6 +343,7 @@ function HospitalApp() {
               onDeleteAlert={handleDeleteAlert}
               onTriggerWorker={handleTriggerWorker}
               onHealdecAction={handleHealdecAction}
+              onAnalyzeRepo={handleAnalyzeRepo}
             />
           )}
 
