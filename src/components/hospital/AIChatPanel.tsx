@@ -16,31 +16,31 @@ interface Message {
 
 interface AIChatPanelProps {
   isOpen: boolean
-  onClose: () => void
-  repositories: Repository[]
 }
+export function AIChatPanel(
+ 
 
-export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '0',
-      role: 'assistant',
-      content: 'Hi! I\'m your AI Health Assistant. Select a repository and I can help analyze its health, suggest improvements, or answer questions about its metrics.',
     }
-  ])
   const [input, setInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedRepo, setSelectedRepo] = useState<string>('')
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  con
 
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    if (scrollAreaRef.cu
     }
-  }, [messages])
 
-  const handleSend = async () => {
-    if (!input.trim()) return
+    
+    const userMessage: Message = {
+      role: 'user',
+      repoContext: selectedRepo,
+
+
+
+      const currentRepo = reposi
+      let contextInfo = ''
+     
+Repository Conte
+
+- Language: ${currentRepo.language
+- Code Quality: ${currentRepo
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -55,35 +55,19 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
 
     try {
       const currentRepo = repositories.find(r => r.id === selectedRepo)
-      
-      let contextInfo = ''
-      if (currentRepo) {
-        contextInfo = `
-
-Repository Context:
-- Name: ${currentRepo.name}
-- Health Score: ${currentRepo.healthScore}
-- Status: ${currentRepo.status}
-- Language: ${currentRepo.language}
-- Open PRs: ${currentRepo.metrics?.openPRs || 0}
-- Code Quality: ${currentRepo.metrics?.codeQuality || 0}
-- Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
-
-`
-      }
-      
-      const promptText = `You are a repository health assistant. ${contextInfo}User Question: ${input}
+      const promptText = window.spark.llmPrompt`You are a repository health assistant. 
+${currentRepo ? `\n\nRepository Context:\n- Name: ${currentRepo.name}\n- Health Score: ${currentRepo.healthScore}\n- Status: ${currentRepo.status}\n- Language: ${currentRepo.language}\n- Open PRs: ${currentRepo.metrics?.openPRs || 0}\n- Code Quality: ${currentRepo.metrics?.codeQuality || 0}\n- Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}\n\n` : ''}User Question: ${input}
 
 Provide a helpful, concise response about the repository or general repository health topics. If discussing specific metrics, reference the context provided.`
 
       const response = await window.spark.llm(promptText, 'gpt-4o-mini')
       
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response,
-        repoContext: selectedRepo,
       }
+        role: 'assistant',
+      setIsLoading(false)
+        repoContext: selectedRepo,
+
       
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
@@ -93,9 +77,9 @@ Provide a helpful, concise response about the repository or general repository h
         content: 'Sorry, I encountered an error processing your request. Please try again.',
       }
       setMessages(prev => [...prev, errorMessage])
-    } finally {
+    setIsLoadin
       setIsLoading(false)
-    }
+     
   }
 
   const handleAnalyze = async () => {
@@ -115,7 +99,7 @@ Provide a helpful, concise response about the repository or general repository h
     setIsLoading(true)
 
     try {
-      const promptText = `You are a repository health analyst. Analyze this repository and provide key insights:
+      const promptText = window.spark.llmPrompt`You are a repository health analyst. Analyze this repository and provide key insights:
 
 Repository: ${currentRepo.name}
 - Health Score: ${currentRepo.healthScore}/100
@@ -170,15 +154,15 @@ Keep the response concise and actionable.`
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <Sparkle size={20} weight="fill" className="text-accent" />
-          <h3 className="font-semibold">AI Health Assistant</h3>
+                      repo.status === 'warning' ? 'bg-yellow-500
         </div>
-        <Button
+               
           variant="ghost"
           size="icon"
           onClick={onClose}
           className="h-8 w-8"
         >
-          <X size={18} />
+          <Button
         </Button>
       </div>
 
@@ -210,85 +194,85 @@ Keep the response concise and actionable.`
             variant="outline"
             size="sm"
             className="w-full"
-            onClick={handleAnalyze}
+            </div>
             disabled={isLoading}
-          >
+           
             <Sparkle size={14} />
             Analyze Repository
           </Button>
         )}
 
-        {selectedRepo && (
+                  <span cl
           <div className="text-xs text-muted-foreground flex items-center gap-1">
             <GitBranch size={12} />
             {repositories.find(r => r.id === selectedRepo)?.fullName}
-          </div>
+
         )}
-      </div>
+          <I
 
       <ScrollArea className="flex-1 p-4">
         <div ref={scrollAreaRef} className="space-y-4">
           {messages.map(message => (
             <div
-              key={message.id}
+            disabled={isLoadin
               className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
+            <
               {message.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
                   <Sparkle size={16} weight="fill" className="text-accent" />
                 </div>
               )}
-              <div
+
                 className={`max-w-[80%] rounded-lg p-3 ${
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground'
                 }`}
-              >
+
                 <div className="text-sm whitespace-pre-wrap">{message.content}</div>
-              </div>
+
               {message.role === 'user' && (
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <User size={16} weight="fill" className="text-primary" />
-                </div>
+
               )}
-            </div>
+
           ))}
-          {isLoading && (
+
             <div className="flex gap-3 justify-start">
               <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
                 <Sparkle size={16} weight="fill" className="text-accent animate-pulse" />
-              </div>
+
               <div className="bg-muted rounded-lg p-3">
-                <div className="flex gap-1">
+
                   <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></span>
                   <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
                   <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
                 </div>
               </div>
-            </div>
+
           )}
-        </div>
+
       </ScrollArea>
 
       <div className="p-4 border-t border-border">
         <div className="flex gap-2">
           <Input
             placeholder="Ask about repository health..."
-            value={input}
+
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
-          />
+
           <Button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            size="icon"
-          >
+
+
             <PaperPlaneRight size={18} weight="fill" />
-          </Button>
+
         </div>
-      </div>
+
     </Card>
-  )
+
 }
