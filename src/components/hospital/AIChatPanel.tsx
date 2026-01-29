@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/inpu
+import { ScrollArea } from '@/components/ui/s
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -62,22 +62,22 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
         ? `\n\nRepository Context:\n- Name: ${currentRepo.fullName}\n- Health Score: ${currentRepo.healthScore}\n- Status: ${currentRepo.status}\n- Language: ${currentRepo.language}\n- Open Issues: ${currentRepo.metrics?.openIssues || 0}\n- Contributors: ${currentRepo.metrics?.contributors || 0}\n`
         : ''
 
-      const prompt = `You are a repository health assistant. Answer the following question about software development and repository management.${contextInfo}\n\nUser question: ${input}`
+      const prompt = spark.llmPrompt`You are a repository health assistant. Answer the following question about software development and repository management.${contextInfo}\n\nUser question: ${input}`
 
-      const response = await window.spark.llm(prompt, 'gpt-4o-mini')
+      const response = await spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response,
-        repoContext: selectedRepo
+
+    } catch (error) {
+        id: (Date.now() + 
+        content: 'Sorry, I encoun
       }
 
-      setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
+  }
+  const handleKeyPres
+      e.preventDefault()
+    }
+
         content: 'Sorry, I encountered an error. Please try again.',
         repoContext: selectedRepo
       }])
@@ -110,7 +110,7 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
     setIsLoading(true)
 
     try {
-      const prompt = `Analyze the following repository and provide a comprehensive health assessment:
+      const prompt = spark.llmPrompt`Analyze the following repository and provide a comprehensive health assessment:
 
 Repository Details:
 - Name: ${currentRepo.fullName}
@@ -131,7 +131,7 @@ Provide a comprehensive health analysis with:
 4. Auto-healing suggestions if applicable
 5. Priority actions to take`
 
-      const response = await window.spark.llm(prompt, 'gpt-4o-mini')
+      const response = await spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -145,57 +145,57 @@ Provide a comprehensive health analysis with:
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'Sorry, I encountered an error analyzing the repository. Please try again.',
-        repoContext: selectedRepo
-      }])
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  return (
-    <Card className="fixed right-4 top-4 bottom-4 w-96 flex flex-col shadow-2xl z-50 bg-card/95 backdrop-blur-sm glow-border border-primary/20">
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <div className="flex items-center gap-2">
-          <Sparkle size={20} weight="fill" className="text-accent" />
-          <span className="font-semibold">AI Assistant</span>
-        </div>
-        <Button
           variant="ghost"
-          size="icon"
           onClick={onClose}
-        >
-          <X size={20} />
-        </Button>
+         
       </div>
+      <div className="p-3
+     
+   
 
-      <div className="p-3 border-b border-border space-y-2">
-        <div className="flex gap-2">
-          <Select value={selectedRepo} onValueChange={setSelectedRepo}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Select repository" />
-            </SelectTrigger>
-            <SelectContent>
-              {repositories.map(repo => (
-                <SelectItem key={repo.id} value={repo.id}>
-                  <div className="flex items-center gap-2">
+          
                     <Badge 
-                      variant={repo.status === 'healthy' ? 'default' : repo.status === 'critical' ? 'destructive' : 'secondary'}
                       className="text-xs"
-                    >
                       {repo.status}
-                    </Badge>
                     {repo.name}
-                  </div>
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            variant="outline"
+            </
+          <Butt
             size="sm"
-            onClick={handleAnalyze}
-            disabled={!selectedRepo || isLoading}
+            disabled=
+            Analyze
+        <
+          <div className=
+            <span
+            
+
+
+        <div ref={scrollAreaRef} cla
+            <div
+              className={`flex gap-3 ${message
+              {message.role === 'assistant' && (
+                  <Sparkle s
+              )}
+                className={`px-3 py-2 rou
+                    ? 'bg-primary text-primary-foreground'
+                }`}
+                <p classNam
+              {message.role === 'user' && (
+                  <User size={16} weight=
+              )}
+          ))}
+            <div className="
+                <Sparkle size={
+              <div class
+                  <span class
+                 
+              </div>
+          )}
+      </ScrollAre
+      <div className="p-3 bor
+          <Input
+            onChange={(e) => setInp
+            placeholder="Ask about repository hea
           >
             Analyze
           </Button>
@@ -262,6 +262,22 @@ Provide a comprehensive health analysis with:
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask about repository health..."
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button
+            onClick={handleSend}
+            disabled={!input.trim() || isLoading}
+            size="icon"
+            className="glow-accent"
+          >
+            <PaperPlaneRight size={18} weight="fill" />
+          </Button>
+        </div>
+      </div>
+    </Card>
+  )
+}
             disabled={isLoading}
             className="flex-1"
           />
