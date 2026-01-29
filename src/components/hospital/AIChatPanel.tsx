@@ -1,12 +1,10 @@
-/// <reference path="../../vite-end.d.ts" />
-/// <reference types="../../vite-end.d.ts" />
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { X, Sparkle, User, PaperPlaneRight, GitBranch } from '@phosphor-icons/react'
 import type { Repository } from '@/lib/hospitalTypes'
 
@@ -18,22 +16,16 @@ interface Message {
 }
 
 interface AIChatPanelProps {
-  repositories: Repository[]
-  onClose: () => void
   isOpen: boolean
+  onClose: () => void
+  repositories: Repository[]
 }
 
-export default function AIChatPanel({ repositories, onClose, isOpen }: AIChatPanelProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Hello! I\'m AlgoBrainDoctor AI. I can help you monitor repository health, analyze code quality, and suggest improvements. Select a repository to get started.'
-    }
-  ])
+export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [selectedRepo, setSelectedRepo] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -72,8 +64,8 @@ Language: ${currentRepo.language}
         : 'No repository selected.'
 
       const conversationHistory = messages.slice(-5).map(m => `${m.role}: ${m.content}`).join('\n')
-      
-      const promptText = `You are AlgoBrainDoctor AI, an expert in repository health monitoring and code quality analysis. 
+
+      const prompt = (window.spark.llmPrompt as any)`You are AlgoBrainDoctor AI, an expert in repository health monitoring and code quality analysis. 
 
 Context:
 ${contextInfo}
@@ -83,9 +75,9 @@ ${conversationHistory}
 
 User question: ${input}
 
-Provide helpful, concise advice about repository health, code quality, or suggest actions. Keep responses under 150 words.`
+Provide helpful, concise insights about repository health, issues, and recommendations.`
 
-      const response = await window.spark.llm(promptText, 'gpt-4o-mini')
+      const response = await window.spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -96,11 +88,11 @@ Provide helpful, concise advice about repository health, code quality, or sugges
 
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-      console.error('AI chat error:', error)
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
+        content: 'Sorry, I encountered an error processing your request. Please try again.',
+        repoContext: selectedRepo
       }])
     } finally {
       setIsLoading(false)
@@ -120,26 +112,35 @@ Provide helpful, concise advice about repository health, code quality, or sugges
     const currentRepo = repositories.find(r => r.id === selectedRepo)
     if (!currentRepo) return
 
-    const analysisMessage: Message = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: `Analyze ${currentRepo.fullName}`
+      content: `Analyze the health of ${currentRepo.name}`,
+      repoContext: selectedRepo
     }
 
-    setMessages(prev => [...prev, analysisMessage])
+    setMessages(prev => [...prev, userMessage])
+    setInput('')
     setIsLoading(true)
 
     try {
-      const promptText = `Analyze this repository:
-Repository: ${currentRepo.fullName}
-Health Score: ${currentRepo.healthScore}
-Status: ${currentRepo.status}
-Open Issues: ${currentRepo.openIssues || 0}
-Language: ${currentRepo.language}
+      const prompt = (window.spark.llmPrompt as any)`You are AlgoBrainDoctor AI analyzing repository health.
 
-Provide a brief analysis with 2-3 specific recommendations for improvement.`
+Repository Details:
+- Name: ${currentRepo.fullName}
+- Health Score: ${currentRepo.healthScore}
+- Status: ${currentRepo.status}
+- Open Issues: ${currentRepo.openIssues || 0}
+- Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
+- Language: ${currentRepo.language}
 
-      const response = await window.spark.llm(promptText, 'gpt-4o-mini')
+Provide a comprehensive health analysis with:
+1. Current status assessment
+2. Key concerns or issues
+3. Recommendations for improvement
+4. Auto-healing suggestions if applicable`
+
+      const response = await window.spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -150,11 +151,11 @@ Provide a brief analysis with 2-3 specific recommendations for improvement.`
 
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-      console.error('AI analysis error:', error)
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'Sorry, I encountered an error analyzing the repository. Please try again.'
+        content: 'Sorry, I encountered an error analyzing the repository. Please try again.',
+        repoContext: selectedRepo
       }])
     } finally {
       setIsLoading(false)
