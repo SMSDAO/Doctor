@@ -1,7 +1,8 @@
+import { useState, useEffect, useRef } from 
 import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -9,122 +10,122 @@ import { X, Sparkle, User, PaperPlaneRight, GitBranch } from '@phosphor-icons/re
 import type { Repository } from '@/lib/hospitalTypes'
 
 interface Message {
-  id: string
+  isOpen: bo
   role: 'user' | 'assistant'
-  content: string
+}
   repoContext?: string
-}
-
-interface AIChatPanelProps {
-  isOpen: boolean
-  onClose: () => void
-  repositories: Repository[]
-}
-
-export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps) {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState('')
-  const [selectedRepo, setSelectedRepo] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(false)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
-  }, [messages])
+ 
 
   if (!isOpen) return null
+  const handleSen
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input,
-      repoContext: selectedRepo
-    }
+      id: Date.now().toStrin
+ 
 
     setMessages(prev => [...prev, userMessage])
-    setInput('')
     setIsLoading(true)
-
     try {
-      const currentRepo = repositories.find(r => r.id === selectedRepo)
       const contextInfo = currentRepo
-        ? `
 Repository: ${currentRepo.fullName}
-Health Score: ${currentRepo.healthScore}
 Status: ${currentRepo.status}
-Open Issues: ${currentRepo.openIssues || 0}
-Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
-Language: ${currentRepo.language}
+
 `
-        : 'No repository selected.'
 
-      const conversationHistory = messages.slice(-5).map(m => `${m.role}: ${m.content}`).join('\n')
 
-      const prompt = (window.spark.llmPrompt as any)`You are AlgoBrainDoctor AI, an expert in repository health monitoring and code quality analysis. 
 
-Context:
 ${contextInfo}
 
-Previous conversation:
-${conversationHistory}
 
-User question: ${input}
 
-Provide helpful, concise insights about repository health, issues, and recommendations.`
 
-      const response = await window.spark.llm(prompt, 'gpt-4o-mini')
 
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
+
         content: response,
-        repoContext: selectedRepo
       }
-
-      setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
+      setMessages(p
+      setMessages(pre
         role: 'assistant',
-        content: 'Sorry, I encountered an error processing your request. Please try again.',
-        repoContext: selectedRepo
-      }])
-    } finally {
-      setIsLoading(false)
-    }
-  }
+     
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
     }
-  }
 
+    if (e.key === 'Ent
+
+  }
   const handleAnalyze = async () => {
-    if (!selectedRepo) return
 
-    const currentRepo = repositories.find(r => r.id === selectedRepo)
-    if (!currentRepo) return
-
+    if (!cu
     const userMessage: Message = {
-      id: Date.now().toString(),
       role: 'user',
-      content: `Analyze the health of ${currentRepo.name}`,
-      repoContext: selectedRepo
-    }
+      repoContext: selectedRe
 
-    setMessages(prev => [...prev, userMessage])
     setInput('')
-    setIsLoading(true)
 
-    try {
-      const prompt = (window.spark.llmPrompt as any)`You are AlgoBrainDoctor AI analyzing repository health.
+ 
+Repository Details:
+
+- Open Issues: ${currentRepo.openIssues || 0}
+
+Provide a comprehensive health analysis with:
+
+4. Auto-
+      const re
+
+        role: 'assista
+        repoContext: s
+
+    } catch (error) {
+
+        content: 'Sorry, I encountered an error analyzing the repository. Please try aga
+
+      setIsLoading(false)
+
+  return (
+      <div className="flex items-center 
+          <Sparkle size={2
+        </div>
+          variant="ghost"
+       
+
+      </div>
+      <div className=
+          <Select value={selectedRepo
+              <SelectValue placeholder="
+            <SelectContent
+                <SelectItem key={repo.id} value={repo.id}>
+                    <Badge 
+         
+               
+                    {repo
+     
+   
+
+            size="sm"
+            disabled={!selectedRepo}
+            Analyze
+        </div>
+     
+   
+
+        )}
+
+
+            <div
+              className={`fl
+
+                  <Sparkle size={1
+              )}
+                cla
+                    ? 'bg-primary text-primary-foreground'
+                }`}
+     
+
+                  <User size={16} weight="fill"
+              )}
+          ))}
+
+         
+              <div className="px-3 py-2 rounded-lg bg-muted">
 
 Repository Details:
 - Name: ${currentRepo.fullName}
@@ -140,7 +141,7 @@ Provide a comprehensive health analysis with:
 3. Recommendations for improvement
 4. Auto-healing suggestions if applicable`
 
-      const response = await window.spark.llm(prompt, 'gpt-4o-mini')
+      const response = await spark.llm(prompt, 'gpt-4o-mini')
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -255,32 +256,32 @@ Provide a comprehensive health analysis with:
               <div className="px-3 py-2 rounded-lg bg-muted">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </ScrollArea>
 
-      <div className="p-3 border-t border-border flex gap-2">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask about repository health..."
-          className="flex-1"
-          disabled={isLoading}
-        />
-        <Button
-          onClick={handleSendMessage}
-          disabled={!input.trim() || isLoading}
-          size="sm"
-        >
-          <PaperPlaneRight size={16} weight="fill" />
-        </Button>
-      </div>
-    </Card>
-  )
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
