@@ -167,6 +167,35 @@ All critical data is persisted using the `useKV` hook:
 
 ---
 
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+### Getting Started
+- **[Quick Start Guide](./docs/getting-started.md)** - Get up and running in minutes
+- **[Installation](./docs/getting-started.md)** - Installation and setup instructions
+
+### Core Documentation
+- **[Architecture Overview](./docs/architecture.md)** - System design and components
+- **[Worker System](./docs/workers.md)** - 12 parallel workers explained
+- **[Healdec Engine](./docs/healdec.md)** - Auto-healing strategies
+- **[Workflows](./docs/workflows.md)** - Role-based user workflows
+
+### Technical Documentation
+- **[API Reference](./docs/api-reference.md)** - Complete API documentation
+- **[Development Guide](./docs/development.md)** - Development setup
+- **[Deployment Guide](./docs/deployment.md)** - Production deployment
+
+### Support
+- **[Troubleshooting](./docs/troubleshooting.md)** - Common issues and solutions
+- **[FAQ](./docs/faq.md)** - Frequently asked questions
+- **[Contributing](./docs/contributing.md)** - How to contribute
+- **[Glossary](./docs/glossary.md)** - Terms and definitions
+
+📖 **[View All Documentation](./docs/README.md)**
+
+---
+
 ## 🔮 Future Enhancements
 
 - GitHub integration for live repository scanning
@@ -178,12 +207,31 @@ All critical data is persisted using the `useKV` hook:
 
 ---
 
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](./docs/contributing.md) for details on:
+- Code of conduct
+- Development workflow
+- Coding standards
+- Pull request process
+
+---
+
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
+## 🆘 Support
+
+- 📖 [Documentation](./docs/README.md)
+- 🐛 [Report Issues](https://github.com/SMSDAO/Doctor/issues)
+- 💬 [Discussions](https://github.com/SMSDAO/Doctor/discussions)
+- 🔒 [Security Policy](./SECURITY.md)
+
+---
+
 **Version:** 4.0.0  
-**Last Updated:** 2025-01-28  
+**Last Updated:** 2026-02-07  
 **Made with** 🧠⚡ **by the AlgoBrainDoctor team**
