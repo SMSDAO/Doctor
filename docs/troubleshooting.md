@@ -409,7 +409,7 @@ localStorage.removeItem('watchlist');
 
 // Or clear all app data
 Object.keys(localStorage)
-  .filter(k => k.startsWith('algobraindoctor_'))
+  .filter(k => k.startsWith('hospital-'))
   .forEach(k => localStorage.removeItem(k));
 ```
 
