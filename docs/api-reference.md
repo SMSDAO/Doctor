@@ -760,7 +760,7 @@ curl -X POST "https://api.algobraindoctor.io/v1/alerts" \
 ## Related Documentation
 
 - [Getting Started](./getting-started.md) - Quick start guide
-- [Developer Guide](./developer-guide.md) - Development setup
+- [Developer Guide](./development.md) - Development setup
 - [Workflows](./workflows.md) - User workflows
 - [Troubleshooting](./troubleshooting.md) - Common issues
 
