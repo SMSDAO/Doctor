@@ -417,7 +417,7 @@ Object.keys(localStorage)
 ```typescript
 function loadWatchlist(): string[] {
   try {
-    const data = localStorage.getItem('watchlist');
+    const data = localStorage.getItem('hospital-watchlist');
     const parsed = JSON.parse(data || '[]');
     return Array.isArray(parsed) ? parsed : [];
   } catch {

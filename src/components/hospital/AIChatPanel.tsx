@@ -2,17 +2,18 @@ import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Sparkle, X, User, PaperPlaneRight, GitBranch } from '@phosphor-icons/react'
+import { spark } from '@github/spark'
+
 interface Repository {
+  id: string
   name: string
-
+  status?: string
+  autoHealing?: boolean
+  metrics?: {
+    openPRs?: number
   }
-}
-interface Mess
-  role: 'user' |
-  repoContext
-
-  i
-  repositories: Reposit
 }
 
 interface Message {
@@ -28,21 +29,21 @@ interface AIChatPanelProps {
   repositories: Repository[]
 }
 
-    if (!input.trim()) return
-    const userMessage: Message = {
+export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
-      repoContext: selectedRepo
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedRepo, setSelectedRepo] = useState<string>('')
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-    setInput('')
-
-      const current
-
-Open PRs: ${currentRepo?.metrics?.openPRs || 0}
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
-User Question: $
+  }, [messages])
 
-2. Concerns or issues
-
+  const handleSend = async () => {
+    if (!input.trim()) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -78,7 +79,7 @@ Provide a helpful, concise response with:
         role: 'assistant',
         content: response,
         repoContext: selectedRepo
-      c
+      }
 
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
@@ -88,9 +89,9 @@ Provide a helpful, concise response with:
         content: 'Sorry, I encountered an error processing your request. Please try again.'
       }
       setMessages(prev => [...prev, errorMessage])
-
+    } finally {
       setIsLoading(false)
-     
+    }
   }
 
   const handleAnalyze = async () => {
@@ -111,43 +112,43 @@ Provide a helpful, concise response with:
     try {
       const promptText = spark.llmPrompt`You are a repository health analyst. Analyze this repository and provide insights.
 
-        <div className="flex it
+Repository: ${currentRepo.name}
 Open PRs: ${currentRepo.metrics?.openPRs || 0}
 Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
 Status: ${currentRepo.status}
 
 Provide a comprehensive health analysis with:
 1. Overall health assessment
-              <SelectValu
+2. Specific issues identified
 3. Recommendations for improvement`
 
       const response = await spark.llm(promptText)
 
       const assistantMessage: Message = {
-                    {repo.name}
+        id: (Date.now() + 1).toString(),
         role: 'assistant',
-            </SelectConten
+        content: response,
         repoContext: selectedRepo
-       
+      }
 
-          >
+      setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-            <div className
+        role: 'assistant',
         content: 'Sorry, I encountered an error analyzing the repository. Please try again.'
-       
+      }
       setMessages(prev => [...prev, errorMessage])
-        <Scroll
+    } finally {
       setIsLoading(false)
-     
-   
+    }
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
-     
+    }
   }
 
   if (!isOpen) return null
@@ -163,7 +164,7 @@ Provide a comprehensive health analysis with:
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X size={18} />
           </Button>
-              
+        </div>
 
         <div className="p-4 border-b border-border space-y-3">
           <Select value={selectedRepo} onValueChange={setSelectedRepo}>
@@ -183,31 +184,29 @@ Provide a comprehensive health analysis with:
           </Select>
 
           <Button
-
-
+            className="w-full"
             disabled={isLoading || !selectedRepo}
             onClick={handleAnalyze}
           >
-
             Analyze Repository
-
+          </Button>
 
           {selectedRepo && (
             <div className="text-xs text-muted-foreground">
               Selected: {repositories.find(r => r.id === selectedRepo)?.name}
-
+            </div>
           )}
         </div>
 
         <ScrollArea className="flex-1 p-4">
           <div ref={scrollAreaRef} className="space-y-4">
             {messages.map(message => (
-
+              <div
                 key={message.id}
                 className={`flex gap-3 ${
                   message.role === 'user' ? 'justify-end' : 'justify-start'
                 }`}
-
+              >
                 {message.role === 'assistant' && (
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
                     <Sparkle size={16} weight="fill" className="text-primary-foreground" />
@@ -221,13 +220,13 @@ Provide a comprehensive health analysis with:
                   }`}
                 >
                   {message.content}
-
+                </div>
                 {message.role === 'user' && (
                   <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center shrink-0">
                     <User size={16} weight="fill" className="text-accent-foreground" />
                   </div>
                 )}
-
+              </div>
             ))}
 
             {isLoading && (
@@ -235,7 +234,7 @@ Provide a comprehensive health analysis with:
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
                   <Sparkle size={16} weight="fill" className="text-primary-foreground" />
                 </div>
-
+                <div className="flex items-center gap-1 px-4 py-2 bg-muted rounded-lg">
                   <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '0ms' }} />
                   <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '150ms' }} />
                   <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -247,23 +246,23 @@ Provide a comprehensive health analysis with:
 
         <div className="p-4 border-t border-border flex gap-2">
           <Textarea
-
+            value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask about repository health..."
             className="resize-none"
             rows={2}
             disabled={isLoading}
-
+          />
           <Button
             onClick={handleSend}
-
+            size="icon"
             disabled={isLoading || !input.trim()}
-
+          >
             <PaperPlaneRight size={18} />
-
+          </Button>
         </div>
-
+      </div>
     </div>
-
+  )
 }
