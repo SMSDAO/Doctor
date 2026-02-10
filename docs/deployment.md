@@ -517,10 +517,10 @@ Configure cache rules:
 **Issue:** `process.env.VITE_*` variables undefined
 
 **Solutions:**
-1. Prefix with `VITE_`: `VITE_API_URL`
-2. Restart dev server after adding variables
-3. Check `.env.production` file exists
-4. Verify build includes environment
+1. In Vite client code, access env vars via `import.meta.env.VITE_*` (for example, `import.meta.env.VITE_API_URL`) instead of `process.env.VITE_*`
+2. Prefix variables in `.env` files with `VITE_`: `VITE_API_URL=...`
+3. Restart the Vite dev server after adding or changing variables
+4. Check `.env.production` file exists and is included in the build
 
 ### Slow Load Times
 
