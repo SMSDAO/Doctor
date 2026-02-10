@@ -239,8 +239,8 @@ console.log(localStorage.getItem('apiKey'));
 2. **Clear application state:**
 ```javascript
 // In console
-localStorage.removeItem('watchlist');
-localStorage.removeItem('alerts');
+localStorage.removeItem('hospital-watchlist');
+localStorage.removeItem('hospital-alerts');
 location.reload();
 ```
 
