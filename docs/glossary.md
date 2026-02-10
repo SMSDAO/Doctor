@@ -11,7 +11,7 @@ A monitoring rule that triggers notifications when a repository's health score m
 Worker responsible for checking active alerts and sending notifications when conditions are met.
 
 **API Key**  
-Authentication credential used to access the AlgoBrainDoctor API. Format: `jsk_` followed by a random string.
+Authentication credential used to access the AlgoBrainDoctor API. Currently generated in the format `bdh_v4_` followed by a random string. Older or planned documentation may reference `jsk_` as an API key prefix; treat those as equivalent API keys.
 
 **AuditWorker**  
 Worker that logs all system changes and user actions for compliance and troubleshooting purposes.
