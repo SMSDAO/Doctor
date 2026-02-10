@@ -31,9 +31,7 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 ### Development
 - [Development Setup](./development.md) - Setting up your development environment
 - [Contributing Guidelines](./contributing.md) - How to contribute to the project
-- [Code Style Guide](./code-style.md) - Coding standards and best practices
-- [Testing Guide](./testing.md) - Running and writing tests
-
+- Code Style & Testing Guides - See [Development Setup](./development.md) and [Contributing Guidelines](./contributing.md) for coding standards and testing practices
 ### Deployment & Operations
 - [Deployment Guide](./deployment.md) - Production deployment instructions
 - [Monitoring & Observability](./monitoring.md) - System monitoring and metrics
