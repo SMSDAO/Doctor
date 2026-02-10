@@ -698,7 +698,7 @@ describe('Healdec Recovery', () => {
 
 - [Worker System](./workers.md) - Worker architecture
 - [Architecture](./architecture.md) - System design
-- [Monitoring](./monitoring.md) - Observability
+- [Monitoring](./architecture.md) - Observability
 - [Troubleshooting](./troubleshooting.md) - Common issues
 
 ---
