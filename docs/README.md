@@ -6,8 +6,8 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 
 ### Getting Started
 - [Quick Start Guide](./getting-started.md) - Get up and running in minutes
-- [Installation & Setup](./installation.md) - Detailed installation instructions
-- [Configuration](./configuration.md) - Configure the application for your needs
+- Installation & Setup - Detailed installation instructions
+- Configuration - Configure the application for your needs
 
 ### Core Concepts
 - [Architecture Overview](./architecture.md) - System design and component architecture
