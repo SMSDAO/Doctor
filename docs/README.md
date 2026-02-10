@@ -24,9 +24,9 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 
 ### Technical Documentation
 - [API Reference](./api-reference.md) - Complete API documentation
-- [UI Components](./components.md) - Component library and design system
-- [State Management](./state-management.md) - Data persistence and state handling
-- [Styling Guide](./styling-guide.md) - AuraFX theme and styling conventions
+- UI Components - Documentation coming soon
+- State Management - Documentation coming soon
+- Styling Guide - Documentation coming soon
 
 ### Development
 - [Development Setup](./development.md) - Setting up your development environment
