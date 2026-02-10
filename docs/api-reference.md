@@ -2,6 +2,7 @@
 
 Complete API documentation for AlgoBrainDoctor. This document covers all available endpoints, authentication, request/response formats, and examples.
 
+> **API status:** AlgoBrainDoctor is currently a browser-only application. The HTTP API described in this document is **not yet available** and is planned for a future server-backed version. Endpoints, authentication, and rate limits documented here are **subject to change**.
 ## Base URL
 
 ```
