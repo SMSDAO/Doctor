@@ -440,14 +440,14 @@ The Developer role focuses on API integration, testing, and documentation.
    - Permissions (read, write, admin)
 
 4. Click **Generate**
-5. Key displayed with `jsk_` prefix
+5. Key displayed with `bdh_v4_` prefix
 6. **Important:** Copy key immediately (shown once)
 
 #### View API Keys
 1. See list of all created keys
 2. Each entry shows:
    - Key name
-   - Masked key string (jsk_****)
+   - Masked key string (bdh_v4_****)
    - Request count
    - Last used date
    - Status (Active, Revoked)
