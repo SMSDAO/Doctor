@@ -605,10 +605,10 @@ Data survives:
 
 ### Real-Time Updates
 Some data updates automatically:
-- Repository health scores (every 5 minutes)
+- Repository health scores (every 30 seconds)
 - Worker heartbeats (every 30 seconds)
 - Alert checking (every 1 minute)
-- System metrics (every 10 seconds)
+- System metrics (every 30 seconds)
 
 ### Error Handling
 When errors occur:
