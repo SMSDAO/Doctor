@@ -34,10 +34,7 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 - Code Style & Testing Guides - See [Development Setup](./development.md) and [Contributing Guidelines](./contributing.md) for coding standards and testing practices
 ### Deployment & Operations
 - [Deployment Guide](./deployment.md) - Production deployment instructions
-- [Monitoring & Observability](./monitoring.md) - System monitoring and metrics
 - [Troubleshooting](./troubleshooting.md) - Common issues and solutions
-- [Performance Optimization](./performance.md) - Performance tuning tips
-
 ### Security
 - [Security Policy](./security.md) - Security guidelines and reporting vulnerabilities
 - [Authentication & Authorization](./auth.md) - User authentication and role-based access
