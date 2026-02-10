@@ -756,7 +756,6 @@ WORKER_METRICS_ENABLED=true
 
 - [Architecture Overview](./architecture.md)
 - [Healdec Engine](./healdec.md)
-- [Monitoring Guide](./monitoring.md)
 - [Troubleshooting](./troubleshooting.md)
 
 ---
