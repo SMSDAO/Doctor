@@ -17,10 +17,10 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 
 ### User Guides
 - [User Workflows](./workflows.md) - Complete workflow documentation by role
-- [Operator Dashboard](./operator-guide.md) - Fleet monitoring and health tracking
-- [Admin Panel](./admin-guide.md) - System administration and configuration
-- [Analyst Panel](./analyst-guide.md) - Analytics and insights
-- [Developer Panel](./developer-guide.md) - API integration and development
+- [Operator Dashboard](./workflows.md#operator-dashboard) - Fleet monitoring and health tracking
+- [Admin Panel](./workflows.md#admin-panel) - System administration and configuration
+- [Analyst Panel](./workflows.md#analyst-panel) - Analytics and insights
+- [Developer Panel](./workflows.md#developer-panel) - API integration and development
 
 ### Technical Documentation
 - [API Reference](./api-reference.md) - Complete API documentation
