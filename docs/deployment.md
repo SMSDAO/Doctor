@@ -2,6 +2,8 @@
 
 This guide covers deploying AlgoBrainDoctor to production environments. The application is a browser-based Spark application that can be deployed using various methods.
 
+> **Quick Start**: For Vercel deployment with environment variables, see the [Environment Variables Guide](./environment-variables.md) and use the `.env.production.example` file as a template.
+
 ## Deployment Overview
 
 AlgoBrainDoctor is a static web application built with:
@@ -49,11 +51,61 @@ Access the preview at `http://localhost:4173`
 
 ## Deployment Options
 
-### Option 1: Static Hosting (Recommended)
+### Option 1: Vercel (Recommended)
 
-Deploy to any static hosting service.
+The fastest way to deploy AlgoBrainDoctor with full environment variable support.
 
-#### Vercel
+#### Quick Deploy
+
+1. **Connect Repository**:
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Vercel auto-detects Vite configuration
+
+2. **Configure Environment Variables**:
+   ```bash
+   # Copy the production template
+   cp .env.production.example .env.production
+   
+   # In Vercel Dashboard:
+   # Project Settings → Environment Variables
+   # Add each VITE_* variable from .env.production.example
+   ```
+
+   Required variables for production:
+   - `VITE_GITHUB_CLIENT_ID` - GitHub OAuth Client ID
+   - `VITE_GITHUB_REDIRECT_URI` - OAuth callback URL
+   - `VITE_GITHUB_TOKEN` - GitHub Personal Access Token
+   - `VITE_APP_URL` - Your Vercel deployment URL
+
+   See [Environment Variables Guide](./environment-variables.md) for complete list.
+
+3. **Deploy**:
+   ```bash
+   # Via CLI
+   npm install -g vercel
+   vercel --prod
+   
+   # Or via Git push
+   git push origin main  # Auto-deploys on Vercel
+   ```
+
+4. **Verify Deployment**:
+   - Check build logs in Vercel dashboard
+   - Test environment variables are loaded
+   - Verify GitHub integration works
+   - Test all role-based panels
+
+#### Vercel Configuration
+
+The included `vercel.json` provides:
+- Production build settings
+- Security headers (CSP, X-Frame-Options, etc.)
+- Asset caching (1 year for static assets)
+- SPA routing configuration
+- Optimal region selection
+
+#### Using Vercel CLI
 
 1. Install Vercel CLI:
 ```bash
