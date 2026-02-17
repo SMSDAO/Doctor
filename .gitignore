@@ -24,7 +24,14 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment variables (actual values)
 .env
+.env.local
+.env.*.local
+
+# Keep example files
+!.env*.example
+
 **/agent-eval-report*
 packages
 pids
