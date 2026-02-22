@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/butto
+import { X, Sparkle, User, PaperPlaneRight } 
 import { X, Sparkle, User, PaperPlaneRight } from '@phosphor-icons/react'
-import { Repository } from '@/lib/hospitalTypes'
-
 interface Message {
   id: string
   role: 'user' | 'assistant'
