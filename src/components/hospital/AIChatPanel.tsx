@@ -1,35 +1,35 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { X, Sparkle, User, PaperPlaneRight, GitBranch } from '@phosphor-icons/react'
+import { Select, SelectContent, SelectItem, SelectTrigge
 
-interface Repository {
+  id: string
+  status: string
+
+    healthScore?: numb
   id: string
   name: string
   status: string
-  autoHealing?: boolean
+  autoHealing: boolean
   metrics?: {
     openPRs?: number
     healthScore?: number
   }
-}
+ 
 
-interface Message {
-  id: string
-  role: 'user' | 'assistant'
-  content: string
-  repoContext?: string
-}
+  const scrollAreaR
+  useEffect(
+      scrollAreaRef.current.
+  }, [messages])
+  const handleSend = a
 
-interface AIChatPanelProps {
-  isOpen: boolean
-  onClose: () => void
-  repositories: Repository[]
-}
 
-export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps) {
+      content: input.trim(),
+    }
+    setMessages(prev 
+    setIsLoading(true)
+ 
+
+Repository: ${currentRepo?.name || 'General'}
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -62,70 +62,20 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
 
 Repository: ${currentRepo?.name || 'General'}
 Open PRs: ${currentRepo?.metrics?.openPRs || 0}
-Auto-Healing: ${currentRepo?.autoHealing ? 'Enabled' : 'Disabled'}
-Status: ${currentRepo?.status || 'Unknown'}
-
-User Question: ${input}
-
-Provide a helpful, concise response with:
-1. Key insights
-2. Concerns or issues
-3. Recommendations`
-
-      const response = await spark.llm(promptText)
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response,
         repoContext: selectedRepo
-      }
 
-      setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error processing your request. Please try again.'
-      }
-      setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setIsLoading(false)
-    }
+
+        content: 'Sorry, I encountered an
+      setMessag
+      setIsLoading(fa
   }
 
-  const handleAnalyze = async () => {
-    if (!selectedRepo) return
+      e.preventDefault()
 
-    const currentRepo = repositories.find(r => r.id === selectedRepo)
-    if (!currentRepo) return
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: `Analyze repository: ${currentRepo.name}`
-    }
 
-    setMessages(prev => [...prev, userMessage])
-    setIsLoading(true)
-
-    try {
-      const promptText = spark.llmPrompt`You are a repository health analyst. Analyze this repository and provide insights.
-
-Repository: ${currentRepo.name}
-Open PRs: ${currentRepo.metrics?.openPRs || 0}
-Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
-Status: ${currentRepo.status}
-
-Provide a comprehensive health analysis with:
-1. Overall health assessment
-2. Key concerns
-3. Recommendations for improvement`
-
-      const response = await spark.llm(promptText)
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: response,
         repoContext: selectedRepo
@@ -136,6 +86,56 @@ Provide a comprehensive health analysis with:
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
+                  <div className="flex items-center gap-2">
+       
+                </SelectItem>
+            </S
+
+     
+   
+
+
+            <div className="t
+
+        </div>
+        <ScrollArea classNam
+
+                key={message.id}
+                  message.role =
+              >
+                  <div className="w-8 h-8 rounded-full b
+     
+
+                    message.role === 'user'
+                      
+
+         
+                  <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center shrink-0">
+
+              </div>
+
+              <div className="flex gap-3 justify-start">
+                  <Sparkle si
+
+                  <span className="w-2 h-2 ro
+                </div>
+            )}
+        </ScrollArea>
+
+            value={input}
+
+            className="resize-none"
+            disabled={isLoading}
+          <Button
+            size="icon"
+          >
+       
+
+  )
+
+
+
+
         content: 'Sorry, I encountered an error analyzing the repository. Please try again.'
       }
       setMessages(prev => [...prev, errorMessage])
