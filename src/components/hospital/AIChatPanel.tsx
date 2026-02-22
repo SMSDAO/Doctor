@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Badge } from '@/components/ui/badge'
-import { X, Sparkle, User, PaperPlaneRight } fr
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { X, Sparkle, User, PaperPlaneRight } from '@phosphor-icons/react'
 import { Repository } from '@/lib/hospitalTypes'
 
 interface Message {
-interface AI
+  id: string
   role: 'user' | 'assistant'
-  repositories: R
+  content: string
 }
 
 interface AIChatPanelProps {
@@ -30,7 +30,7 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
-      const curr
+  }, [messages])
 
   const handleSend = async () => {
     if (!input.trim()) return
@@ -42,15 +42,14 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
     }
 
     setMessages(prev => [...prev, userMessage])
-${messages.map(m
+    setInput('')
     setIsLoading(true)
 
     try {
       const currentRepo = repositories.find(r => r.id === selectedRepo)
       const repoContext = currentRepo
-        id: (Date.now() + 1).toString(),
+        ? `Repository: ${currentRepo.name}
 Status: ${currentRepo.status}
-      }
 Open Issues: ${currentRepo.metrics.openIssues}
 Open PRs: ${currentRepo.metrics.openPRs}
 Contributors: ${currentRepo.metrics.contributors}
@@ -74,9 +73,9 @@ Provide helpful, specific advice about repository health, code quality, and best
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-  if (!isOpen) return null
+        role: 'assistant',
         content: response,
-    <di
+      }
 
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
@@ -84,43 +83,40 @@ Provide helpful, specific advice about repository health, code quality, and best
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: 'Sorry, I encountered an error. Please try again.',
-       
+      }
       setMessages(prev => [...prev, errorMessage])
-        </Butto
+    } finally {
       setIsLoading(false)
-     
+    }
   }
 
   const handleAnalyze = () => {
     if (!selectedRepo) return
 
-                  <Badge
+    const currentRepo = repositories.find(r => r.id === selectedRepo)
     if (!currentRepo) return
 
     const analysisMessage = `Please provide a comprehensive health analysis for ${currentRepo.name}.`
-                        : 'de
-
-                  />
-      handleSend()
-           
+    setInput(analysisMessage)
+    handleSend()
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-            classN
+      handleSend()
     }
-   
+  }
 
-        )}
+  if (!isOpen) return null
 
-      <Scr
+  return (
     <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] bg-card border-l border-border shadow-2xl flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center glow-purple">
             <Sparkle size={16} weight="fill" className="text-primary-foreground" />
-          )}
+          </div>
           <div>
             <h3 className="font-semibold">AI Repository Assistant</h3>
             <p className="text-xs text-muted-foreground">
@@ -130,7 +126,7 @@ Provide helpful, specific advice about repository health, code quality, and best
         </div>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X size={20} />
-              <di
+        </Button>
       </div>
 
       <div className="p-4 border-b border-border space-y-3">
@@ -138,17 +134,17 @@ Provide helpful, specific advice about repository health, code quality, and best
           <SelectTrigger>
             <SelectValue placeholder="Select a repository" />
           </SelectTrigger>
-                  <User s
+          <SelectContent>
             {repositories.map(repo => (
               <SelectItem key={repo.id} value={repo.id}>
                 <div className="flex items-center gap-2">
-          {isLoading && 
+                  <Badge
                     variant={
                       repo.status === 'healthy'
                         ? 'default'
                         : repo.status === 'warning'
                         ? 'secondary'
-                  <div className="w-2 h
+                        : 'destructive'
                     }
                     className="w-2 h-2 p-0 rounded-full"
                   />
@@ -162,13 +158,13 @@ Provide helpful, specific advice about repository health, code quality, and best
         {selectedRepo && (
           <Button
             variant="outline"
-            size="ico
+            size="sm"
+            onClick={handleAnalyze}
             className="w-full"
-          </Button>
           >
             <Sparkle size={16} className="mr-2" />
             Analyze Repository
-
+          </Button>
         )}
       </div>
 
@@ -184,25 +180,25 @@ Provide helpful, specific advice about repository health, code quality, and best
           )}
 
           {messages.map(message => (
-
+            <div
               key={message.id}
               className={`flex gap-3 ${
                 message.role === 'user' ? 'justify-end' : 'justify-start'
               }`}
             >
-
+              {message.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 glow-purple">
                   <Sparkle size={14} weight="fill" className="text-primary-foreground" />
                 </div>
               )}
               
-
+              <div
                 className={`rounded-lg px-4 py-2 max-w-[85%] ${
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-foreground'
                 }`}
-
+              >
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
 
@@ -212,9 +208,9 @@ Provide helpful, specific advice about repository health, code quality, and best
                 </div>
               )}
             </div>
+          ))}
 
-
-
+          {isLoading && (
             <div className="flex gap-3">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 glow-purple">
                 <Sparkle size={14} weight="fill" className="text-primary-foreground" />
@@ -226,30 +222,29 @@ Provide helpful, specific advice about repository health, code quality, and best
                   <div className="w-2 h-2 rounded-full bg-foreground/40 animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
-
+            </div>
           )}
         </div>
       </ScrollArea>
 
       <div className="p-4 border-t border-border">
-
+        <div className="flex gap-2">
           <Input
-
+            value={input}
             onChange={(e) => setInput(e.target.value)}
-
+            onKeyDown={handleKeyDown}
             placeholder="Ask about repository health..."
-
             className="flex-1"
-
+          />
           <Button
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
             size="icon"
           >
-
+            <PaperPlaneRight size={18} />
           </Button>
-
+        </div>
       </div>
-
+    </div>
   )
-
+}
