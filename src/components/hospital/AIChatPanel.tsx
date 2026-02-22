@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Button } from '@/components/ui/butto
-import { X, Sparkle, User, PaperPlaneRight } 
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Input } from '@/components/ui/input'
 import { X, Sparkle, User, PaperPlaneRight } from '@phosphor-icons/react'
+import { Repository } from '@/lib/hospitalTypes'
 interface Message {
   id: string
   role: 'user' | 'assistant'
@@ -46,11 +49,11 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
       const repoContext = currentRepo
         ? `Repository: ${currentRepo.name}
 Status: ${currentRepo.status}
-Open Issues: ${currentRepo.metrics.openIssues}
-Open PRs: ${currentRepo.metrics.openPRs}
-Contributors: ${currentRepo.metrics.contributors}
-Recent Commits: ${currentRepo.metrics.commits}
-Code Quality: ${currentRepo.metrics.codeQuality}
+Open Issues: ${currentRepo.metrics?.openIssues || 0}
+Open PRs: ${currentRepo.metrics?.openPRs || 0}
+Contributors: ${currentRepo.metrics?.contributors || 0}
+Recent Commits: ${currentRepo.metrics?.commits || 0}
+Code Quality: ${currentRepo.metrics?.codeQuality || 'N/A'}
 Auto-healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}`
         : 'General repository health consultation'
 
