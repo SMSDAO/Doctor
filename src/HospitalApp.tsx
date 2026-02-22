@@ -57,10 +57,28 @@ function HospitalApp() {
   const isGithubConnected = githubUser !== null
 
   useEffect(() => {
-    setRepos(generateMockRepositories())
-    setHealdecActions(generateMockHealdecActions(20))
-    setIdentities(generateMockIdentities(30))
-    setJobs(generateMockJobs(25))
+    const initializeApp = async () => {
+      setHealdecActions(generateMockHealdecActions(20))
+      setIdentities(generateMockIdentities(30))
+      setJobs(generateMockJobs(25))
+
+      if (isGithubConnected && useRealRepos) {
+        setIsLoadingGithub(true)
+        try {
+          const realRepos = await githubService.fetchAndMapRepositories()
+          setRepos(realRepos)
+        } catch (error) {
+          console.error('Failed to load GitHub repos:', error)
+          setRepos(generateMockRepositories())
+        } finally {
+          setIsLoadingGithub(false)
+        }
+      } else {
+        setRepos(generateMockRepositories())
+      }
+    }
+
+    initializeApp()
   }, [])
 
   useEffect(() => {
