@@ -105,6 +105,101 @@ Autonomous recovery system with 5 strategies:
 
 ---
 
+## 📸 UI Dashboards & Screenshots
+
+### Visual Guide
+
+Comprehensive visual layouts for all four role-based dashboards:
+
+**[📖 Complete UI Guide](docs/ui-guide.md)** - Detailed ASCII layouts and component descriptions for:
+- **Operator Dashboard**: Repository monitoring, worker status, Healdec activity
+- **Admin Dashboard**: System administration, worker management, identity resolution
+- **Analyst Dashboard**: Analytics, charts, performance metrics
+- **Developer Dashboard**: API keys, playground, documentation
+
+### Dashboard Previews
+
+#### Operator Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  📊 System Metrics                          │
+│  127 Repos | 87% Avg Health | 12 Workers   │
+│                                              │
+│  🏥 Repository Health Overview              │
+│  SMSDAO/Doctor        🟢 92  ⬆ +2  ⭐      │
+│  ████████████████████░░░░ TypeScript        │
+│                                              │
+│  microsoft/vscode     🟡 67  ⬇ -5          │
+│  ████████████░░░░░░░░░░░░ TypeScript        │
+│                                              │
+│  👷 Worker Status (12 Active)               │
+│  🟢 Index 98% | 🟢 Score 99% | 🟢 Sync 97% │
+└─────────────────────────────────────────────┘
+```
+
+#### Admin Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  📈 System Status                           │
+│  🟢 Database | 🟢 Cache | 🟢 API | 🟢 Jobs │
+│                                              │
+│  🔧 Worker Lifecycle Management             │
+│  IndexWorker   🟢 Active  [Stop] [Restart]  │
+│  ScoreWorker   🟢 Active  [Stop] [Restart]  │
+│                                              │
+│  👥 Identity Management                      │
+│  Developer: Alice Smith                     │
+│  Emails: alice@example.com                  │
+│  GitHub: @alicedev                          │
+└─────────────────────────────────────────────┘
+```
+
+#### Analyst Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  📊 Health Score Distribution               │
+│      ┃                                       │
+│  60 ┃     ██                                │
+│  40 ┃     ██  ██                            │
+│  20 ┃     ██  ██  ██  ██                    │
+│   0 ┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┃  │
+│       0-20 20-40 40-60 60-80 80-100         │
+│                                              │
+│  🔧 Healdec Strategy Effectiveness          │
+│  RETRY     ████████████ 94% | 2.3s         │
+│  RESTART   ██████████░░ 87% | 8.1s         │
+└─────────────────────────────────────────────┘
+```
+
+#### Developer Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  🔑 API Keys           [+ Create New Key]   │
+│  Production Key                             │
+│  bdh_v4_****** [Copy] [Delete]             │
+│                                              │
+│  🧪 API Playground                          │
+│  GET /api/v1/repositories/health            │
+│  Authorization: Bearer bdh_v4_******        │
+│                         [Send Request]      │
+│                                              │
+│  Response (200 OK) - 45ms                   │
+│  { "health_score": 92, "status": "healthy" }│
+└─────────────────────────────────────────────┘
+```
+
+### Screenshot Directory
+
+Full screenshots will be available in [`docs/screenshots/`](docs/screenshots/) organized by role:
+- `operator/` - Fleet monitoring and health tracking
+- `admin/` - System administration and configuration
+- `analyst/` - Analytics and insights
+- `developer/` - API integration and development
+
+**Note**: Actual PNG screenshots will be captured once the application is deployed. The [UI Guide](docs/ui-guide.md) provides detailed visual descriptions of all dashboard layouts.
+
+---
+
 ## 📊 System Metrics
 
 Key metrics monitored:

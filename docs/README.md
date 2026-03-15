@@ -17,6 +17,7 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 
 ### User Guides
 - [User Workflows](./workflows.md) - Complete workflow documentation by role
+- [UI Dashboard Guide](./ui-guide.md) - Visual layouts for all four role-based dashboards
 - [Operator Dashboard](./workflows.md#operator-dashboard) - Fleet monitoring and health tracking
 - [Admin Panel](./workflows.md#admin-panel) - System administration and configuration
 - [Analyst Panel](./workflows.md#analyst-panel) - Analytics and insights
