@@ -172,7 +172,7 @@ const cacheTime = Number(import.meta.env.VITE_CACHE_TTL) || 300000
 
 ### TypeScript Types
 
-Create `src/vite-env.d.ts`:
+Extend the existing `src/vite-end.d.ts` file with environment variable types:
 
 ```typescript
 /// <reference types="vite/client" />

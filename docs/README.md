@@ -13,15 +13,14 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 - [Architecture Overview](./architecture.md) - System design and component architecture
 - [Worker System](./workers.md) - Understanding the 12 parallel workers
 - [Healdec Auto-Healing Engine](./healdec.md) - Autonomous recovery strategies
-- [Repository Health Scoring](./health-scoring.md) - How health scores are calculated
 
 ### User Guides
 - [User Workflows](./workflows.md) - Complete workflow documentation by role
 - [UI Dashboard Guide](./ui-guide.md) - Visual layouts for all four role-based dashboards
-- [Operator Dashboard](./workflows.md#operator-dashboard) - Fleet monitoring and health tracking
-- [Admin Panel](./workflows.md#admin-panel) - System administration and configuration
-- [Analyst Panel](./workflows.md#analyst-panel) - Analytics and insights
-- [Developer Panel](./workflows.md#developer-panel) - API integration and development
+- [Operator Workflows](./workflows.md#operator-workflows) - Fleet monitoring and health tracking
+- [Admin Workflows](./workflows.md#admin-workflows) - System administration and configuration
+- [Analyst Workflows](./workflows.md#analyst-workflows) - Analytics and insights
+- [Developer Workflows](./workflows.md#developer-workflows) - API integration and development
 
 ### Technical Documentation
 - [API Reference](./api-reference.md) - Complete API documentation
@@ -36,16 +35,15 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 ### Deployment & Operations
 - [Deployment Guide](./deployment.md) - Production deployment instructions
 - [Troubleshooting](./troubleshooting.md) - Common issues and solutions
-### Security
-- [Security Policy](./security.md) - Security guidelines and reporting vulnerabilities
-- [Authentication & Authorization](./auth.md) - User authentication and role-based access
 
 ### Reference
 - [Environment Variables](./environment-variables.md) - Configuration via environment
-- [Database Schema](./database-schema.md) - Data models and relationships
 - [Glossary](./glossary.md) - Terms and definitions
 - [FAQ](./faq.md) - Frequently asked questions
 - [Changelog](./changelog.md) - Version history and changes
+
+### Security & Compliance
+- [Security Policy](../SECURITY.md) - Security guidelines and reporting vulnerabilities
 
 ## 🎯 Quick Navigation
 

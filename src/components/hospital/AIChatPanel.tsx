@@ -34,12 +34,10 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedRepo, setSelectedRepo] = useState<string>('')
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   const handleSend = async () => {
@@ -199,7 +197,7 @@ Provide a comprehensive health analysis with:
         </div>
 
         <ScrollArea className="flex-1 p-4">
-          <div ref={scrollAreaRef} className="space-y-4">
+          <div className="space-y-4">
             {messages.map(message => (
               <div
                 key={message.id}
@@ -241,6 +239,8 @@ Provide a comprehensive health analysis with:
                 </div>
               </div>
             )}
+            
+            <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
 

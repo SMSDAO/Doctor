@@ -405,7 +405,7 @@ const storage = localStorage?.available
 1. **Clear corrupted data:**
 ```javascript
 // Clear specific key
-localStorage.removeItem('watchlist');
+localStorage.removeItem('hospital-watchlist');
 
 // Or clear all app data
 Object.keys(localStorage)
