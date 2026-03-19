@@ -44,7 +44,7 @@ export function AIChatPanel({ isOpen, onClose, repositories }: AIChatPanelProps)
     if (!input.trim()) return
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       role: 'user',
       content: input.trim(),
       repoContext: selectedRepo
@@ -73,7 +73,7 @@ Provide a helpful, concise response with:
       const response = await spark.llm(promptText)
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         role: 'assistant',
         content: response,
         repoContext: selectedRepo
@@ -82,7 +82,7 @@ Provide a helpful, concise response with:
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         role: 'assistant',
         content: 'Sorry, I encountered an error processing your request. Please try again.'
       }
@@ -99,7 +99,7 @@ Provide a helpful, concise response with:
     if (!currentRepo) return
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       role: 'user',
       content: `Analyze repository: ${currentRepo.name}`
     }
@@ -113,7 +113,7 @@ Provide a helpful, concise response with:
 Repository: ${currentRepo.name}
 Open PRs: ${currentRepo.metrics?.openPRs || 0}
 Auto-Healing: ${currentRepo.autoHealing ? 'Enabled' : 'Disabled'}
-Status: ${currentRepo.status}
+Status: ${currentRepo.status || 'Unknown'}
 
 Provide a comprehensive health analysis with:
 1. Overall health assessment
@@ -123,7 +123,7 @@ Provide a comprehensive health analysis with:
       const response = await spark.llm(promptText)
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         role: 'assistant',
         content: response,
         repoContext: selectedRepo
@@ -132,7 +132,7 @@ Provide a comprehensive health analysis with:
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         role: 'assistant',
         content: 'Sorry, I encountered an error analyzing the repository. Please try again.'
       }
@@ -159,7 +159,7 @@ Provide a comprehensive health analysis with:
             <Sparkle size={20} weight="fill" className="text-primary" />
             <h3 className="font-semibold">AI Health Assistant</h3>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
             <X size={18} />
           </Button>
         </div>
@@ -258,6 +258,7 @@ Provide a comprehensive health analysis with:
             onClick={handleSend}
             size="icon"
             disabled={isLoading || !input.trim()}
+            aria-label="Send message"
           >
             <PaperPlaneRight size={18} />
           </Button>

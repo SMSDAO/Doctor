@@ -54,9 +54,9 @@ Welcome to the comprehensive documentation for **AlgoBrainDoctor — Brain-Docto
 - **Set up for development** → [Development Setup](./development.md)
 - **Deploy to production** → [Deployment Guide](./deployment.md)
 - **Use the API** → [API Reference](./api-reference.md)
-- **Understand health scores** → [Repository Health Scoring](./health-scoring.md)
+- **Understand health scores** → [Architecture: Health Scoring](./architecture.md#health-scoring-system)
 - **Contribute code** → [Contributing Guidelines](./contributing.md)
-- **Report a security issue** → [Security Policy](./security.md)
+- **Report a security issue** → [Security Policy](../SECURITY.md)
 - **Troubleshoot problems** → [Troubleshooting](./troubleshooting.md)
 
 ## 📖 Documentation Standards
