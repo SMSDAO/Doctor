@@ -105,6 +105,101 @@ Autonomous recovery system with 5 strategies:
 
 ---
 
+## 📸 UI Dashboards & Screenshots
+
+### Visual Guide
+
+Comprehensive visual layouts for all four role-based dashboards:
+
+**[📖 Complete UI Guide](docs/ui-guide.md)** - Detailed ASCII layouts and component descriptions for:
+- **Operator Dashboard**: Repository monitoring, worker status, Healdec activity
+- **Admin Dashboard**: System administration, worker management, identity resolution
+- **Analyst Dashboard**: Analytics, charts, performance metrics
+- **Developer Dashboard**: API keys, playground, documentation
+
+### Dashboard Previews
+
+#### Operator Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  📊 System Metrics                          │
+│  127 Repos | 87% Avg Health | 12 Workers   │
+│                                              │
+│  🏥 Repository Health Overview              │
+│  SMSDAO/Doctor        🟢 92  ⬆ +2  ⭐      │
+│  ████████████████████░░░░ TypeScript        │
+│                                              │
+│  microsoft/vscode     🟡 67  ⬇ -5          │
+│  ████████████░░░░░░░░░░░░ TypeScript        │
+│                                              │
+│  👷 Worker Status (12 Active)               │
+│  🟢 Index 98% | 🟢 Score 99% | 🟢 Sync 97% │
+└─────────────────────────────────────────────┘
+```
+
+#### Admin Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  📈 System Status                           │
+│  🟢 Database | 🟢 Cache | 🟢 API | 🟢 Jobs │
+│                                              │
+│  🔧 Worker Lifecycle Management             │
+│  IndexWorker   🟢 Active  [Stop] [Restart]  │
+│  ScoreWorker   🟢 Active  [Stop] [Restart]  │
+│                                              │
+│  👥 Identity Management                      │
+│  Developer: Alice Smith                     │
+│  Emails: alice@example.com                  │
+│  GitHub: @alicedev                          │
+└─────────────────────────────────────────────┘
+```
+
+#### Analyst Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  📊 Health Score Distribution               │
+│      ┃                                       │
+│  60 ┃     ██                                │
+│  40 ┃     ██  ██                            │
+│  20 ┃     ██  ██  ██  ██                    │
+│   0 ┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┃  │
+│       0-20 20-40 40-60 60-80 80-100         │
+│                                              │
+│  🔧 Healdec Strategy Effectiveness          │
+│  RETRY     ████████████ 94% | 2.3s         │
+│  RESTART   ██████████░░ 87% | 8.1s         │
+└─────────────────────────────────────────────┘
+```
+
+#### Developer Dashboard
+```
+┌─────────────────────────────────────────────┐
+│  🔑 API Keys           [+ Create New Key]   │
+│  Production Key                             │
+│  bdh_v4_****** [Copy] [Delete]             │
+│                                              │
+│  🧪 API Playground                          │
+│  GET /api/v1/repositories/health            │
+│  Authorization: Bearer bdh_v4_******        │
+│                         [Send Request]      │
+│                                              │
+│  Response (200 OK) - 45ms                   │
+│  { "health_score": 92, "status": "healthy" }│
+└─────────────────────────────────────────────┘
+```
+
+### Screenshot Directory
+
+Full screenshots will be available in [`docs/screenshots/`](docs/screenshots/) organized by role:
+- `operator/` - Fleet monitoring and health tracking
+- `admin/` - System administration and configuration
+- `analyst/` - Analytics and insights
+- `developer/` - API integration and development
+
+**Note**: Actual PNG screenshots will be captured once the application is deployed. The [UI Guide](docs/ui-guide.md) provides detailed visual descriptions of all dashboard layouts.
+
+---
+
 ## 📊 System Metrics
 
 Key metrics monitored:
@@ -167,6 +262,35 @@ All critical data is persisted using the `useKV` hook:
 
 ---
 
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+### Getting Started
+- **[Quick Start Guide](./docs/getting-started.md)** - Get up and running in minutes
+- **[Installation](./docs/getting-started.md)** - Installation and setup instructions
+
+### Core Documentation
+- **[Architecture Overview](./docs/architecture.md)** - System design and components
+- **[Worker System](./docs/workers.md)** - 12 parallel workers explained
+- **[Healdec Engine](./docs/healdec.md)** - Auto-healing strategies
+- **[Workflows](./docs/workflows.md)** - Role-based user workflows
+
+### Technical Documentation
+- **[API Reference](./docs/api-reference.md)** - Complete API documentation
+- **[Development Guide](./docs/development.md)** - Development setup
+- **[Deployment Guide](./docs/deployment.md)** - Production deployment
+
+### Support
+- **[Troubleshooting](./docs/troubleshooting.md)** - Common issues and solutions
+- **[FAQ](./docs/faq.md)** - Frequently asked questions
+- **[Contributing](./docs/contributing.md)** - How to contribute
+- **[Glossary](./docs/glossary.md)** - Terms and definitions
+
+📖 **[View All Documentation](./docs/README.md)**
+
+---
+
 ## 🔮 Future Enhancements
 
 - GitHub integration for live repository scanning
@@ -178,12 +302,31 @@ All critical data is persisted using the `useKV` hook:
 
 ---
 
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](./docs/contributing.md) for details on:
+- Code of conduct
+- Development workflow
+- Coding standards
+- Pull request process
+
+---
+
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
+## 🆘 Support
+
+- 📖 [Documentation](./docs/README.md)
+- 🐛 [Report Issues](https://github.com/SMSDAO/Doctor/issues)
+- 💬 [Discussions](https://github.com/SMSDAO/Doctor/discussions)
+- 🔒 [Security Policy](./SECURITY.md)
+
+---
+
 **Version:** 4.0.0  
-**Last Updated:** 2025-01-28  
+**Last Updated:** 2026-02-07  
 **Made with** 🧠⚡ **by the AlgoBrainDoctor team**
