@@ -14,11 +14,11 @@ This is a sophisticated platform requiring multiple role-based panels (User, Adm
 ## Essential Features
 
 **GitHub OAuth Integration**
-- Functionality: Authenticate users with GitHub to access their real repositories for scanning and health monitoring
+- Functionality: Authenticate users with GitHub via Spark's built-in OAuth to access their real repositories for scanning and health monitoring
 - Purpose: Enable the platform to scan actual GitHub repositories instead of mock data, providing personalized repository health insights
-- Trigger: User clicks "Connect GitHub" button if not authenticated, or sees connected status
-- Progression: User clicks Connect → GitHub OAuth flow opens → User grants permissions → OAuth callback → Token stored securely → Real repositories fetched → Dashboard populates with actual repo data
-- Success criteria: OAuth flow completes successfully, user info displays, repositories are fetched from GitHub API, persists across sessions
+- Trigger: Automatic authentication via Spark runtime using spark.user() API
+- Progression: User opens app → Spark handles GitHub OAuth automatically → User info fetched from spark.user() → Real repositories fetched via GitHub API → Dashboard populates with actual repo data → Data persists in KV storage
+- Success criteria: User info displays correctly, real repositories are fetched from GitHub API using Octokit, repository metrics calculated from actual data, persists across sessions
 
 **Real Repository Scanner**
 - Functionality: Fetches and displays real GitHub repositories with health scores calculated from actual metrics (issues, PRs, commits, contributors)

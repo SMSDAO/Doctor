@@ -1,4 +1,5 @@
 import { Repository } from './hospitalTypes'
+import { Octokit } from 'octokit'
 
 export interface GitHubUser {
   login: string
@@ -40,18 +41,49 @@ export interface GitHubRepoDetails {
 }
 
 export class GitHubService {
+  private octokit: Octokit | null = null
+
+  private async getOctokit(): Promise<Octokit | null> {
+    if (this.octokit) {
+      return this.octokit
+    }
+
+    try {
+      const user = await (window as any).spark.user()
+      if (!user || !user.login) {
+        return null
+      }
+
+      this.octokit = new Octokit()
+      return this.octokit
+    } catch (error) {
+      console.error('Failed to initialize Octokit:', error)
+      return null
+    }
+  }
+
   async getCurrentUser(): Promise<GitHubUser | null> {
     try {
       const user = await (window as any).spark.user()
       if (!user || !user.login) {
         return null
       }
+
+      const octokit = await this.getOctokit()
+      if (!octokit) {
+        return null
+      }
+
+      const { data } = await octokit.rest.users.getByUsername({
+        username: user.login,
+      })
+
       return {
-        id: user.id,
-        login: user.login,
-        name: user.login,
-        avatar_url: user.avatarUrl,
-        public_repos: 0,
+        id: data.id,
+        login: data.login,
+        name: data.name || data.login,
+        avatar_url: data.avatar_url,
+        public_repos: data.public_repos,
       }
     } catch (error) {
       console.error('Failed to get current user:', error)
@@ -66,43 +98,39 @@ export class GitHubService {
         return []
       }
 
-      const prompt = (window as any).spark.llmPrompt`Generate realistic GitHub repositories for user "${user.login}".
-      Include a mix of personal projects and contributions.
-      Return the result as a valid JSON object with a single property called "repos" that contains an array of repository objects.
-      Each repository should have these fields: id, name, full_name, description, language, stargazers_count, forks_count, open_issues_count, size, created_at, updated_at, pushed_at, default_branch.
-      Generate 5-8 repositories with realistic data.
-      
-      Return JSON in this format:
-      {
-        "repos": [
-          {
-            "id": 123456,
-            "name": "awesome-project",
-            "full_name": "${user.login}/awesome-project",
-            "owner": {
-              "login": "${user.login}",
-              "avatar_url": "${user.avatar_url}"
-            },
-            "description": "A cool project",
-            "private": false,
-            "html_url": "https://github.com/${user.login}/awesome-project",
-            "created_at": "2023-01-15T10:30:00Z",
-            "updated_at": "2024-01-10T15:45:00Z",
-            "pushed_at": "2024-01-10T15:45:00Z",
-            "size": 1024,
-            "stargazers_count": 42,
-            "watchers_count": 42,
-            "language": "TypeScript",
-            "forks_count": 8,
-            "open_issues_count": 3,
-            "default_branch": "main"
-          }
-        ]
-      }`
+      const octokit = await this.getOctokit()
+      if (!octokit) {
+        return []
+      }
 
-      const response = await (window as any).spark.llm(prompt, 'gpt-4o-mini', true)
-      const data = JSON.parse(response)
-      return data.repos || []
+      const { data } = await octokit.rest.repos.listForUser({
+        username: user.login,
+        sort: 'updated',
+        per_page: 100,
+      })
+
+      return data.map((repo: any) => ({
+        id: repo.id,
+        name: repo.name,
+        full_name: repo.full_name,
+        owner: {
+          login: repo.owner.login,
+          avatar_url: repo.owner.avatar_url,
+        },
+        description: repo.description,
+        private: repo.private,
+        html_url: repo.html_url,
+        created_at: repo.created_at,
+        updated_at: repo.updated_at,
+        pushed_at: repo.pushed_at,
+        size: repo.size,
+        stargazers_count: repo.stargazers_count,
+        watchers_count: repo.watchers_count,
+        language: repo.language,
+        forks_count: repo.forks_count,
+        open_issues_count: repo.open_issues_count,
+        default_branch: repo.default_branch,
+      }))
     } catch (error) {
       console.error('Failed to get user repositories:', error)
       return []
@@ -111,31 +139,57 @@ export class GitHubService {
 
   async getRepositoryDetails(owner: string, repo: string): Promise<GitHubRepoDetails> {
     try {
-      const prompt = (window as any).spark.llmPrompt`Generate realistic repository health metrics for GitHub repository "${owner}/${repo}".
-      Return the result as a valid JSON object with a single property called "details".
-      
-      Return JSON in this format:
-      {
-        "details": {
-          "open_prs": 5,
-          "contributors": 8,
-          "recent_commits": 25,
-          "open_issues": 3,
-          "last_commit_date": "2024-01-10T15:45:00Z"
+      const octokit = await this.getOctokit()
+      if (!octokit) {
+        return {
+          open_prs: 0,
+          contributors: 1,
+          recent_commits: 0,
+          open_issues: 0,
+          last_commit_date: new Date().toISOString(),
         }
-      }`
+      }
 
-      const response = await (window as any).spark.llm(prompt, 'gpt-4o-mini', true)
-      const data = JSON.parse(response)
-      return data.details || {
-        open_prs: 0,
-        contributors: 1,
-        recent_commits: 0,
-        open_issues: 0,
-        last_commit_date: new Date().toISOString(),
+      const [prsResponse, contributorsResponse, commitsResponse] = await Promise.allSettled([
+        octokit.rest.pulls.list({
+          owner,
+          repo,
+          state: 'open',
+          per_page: 100,
+        }),
+        octokit.rest.repos.listContributors({
+          owner,
+          repo,
+          per_page: 100,
+        }),
+        octokit.rest.repos.listCommits({
+          owner,
+          repo,
+          per_page: 30,
+          since: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        }),
+      ])
+
+      const open_prs = prsResponse.status === 'fulfilled' ? prsResponse.value.data.length : 0
+      const contributors = contributorsResponse.status === 'fulfilled' ? contributorsResponse.value.data.length : 1
+      const recent_commits = commitsResponse.status === 'fulfilled' ? commitsResponse.value.data.length : 0
+      const last_commit_date = 
+        commitsResponse.status === 'fulfilled' && commitsResponse.value.data[0]
+          ? commitsResponse.value.data[0].commit.author?.date || new Date().toISOString()
+          : new Date().toISOString()
+
+      const repoResponse = await octokit.rest.repos.get({ owner, repo })
+      const open_issues = repoResponse.data.open_issues_count - open_prs
+
+      return {
+        open_prs,
+        contributors,
+        recent_commits,
+        open_issues,
+        last_commit_date,
       }
     } catch (error) {
-      console.error('Failed to get repository details:', error)
+      console.error(`Failed to get repository details for ${owner}/${repo}:`, error)
       return {
         open_prs: 0,
         contributors: 1,
